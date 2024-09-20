@@ -1,0 +1,66 @@
+/* Unageo Fonts */
+@font-face {
+  font-family: 'Unageo';
+  font-style: normal;
+  font-weight: 800;
+  src: url('@/assets/fonts/Unageo/Unageo-Extrabold.ttf') format('woff2');
+}
+
+@font-face {
+  font-family: 'Unageo';
+  font-style: normal;
+  font-weight: 700;
+  src: url('@/assets/fonts/Unageo/Unageo-Bold.ttf') format('woff2');
+}
+
+@font-face {
+  font-family: 'Unageo';
+  font-style: normal;
+  font-weight: 600;
+  src: url('@/assets/fonts/Unageo/Unageo-Semibold.ttf') format('woff2');
+}
+
+@font-face {
+  font-family: 'Unageo';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@/assets/fonts/Unageo/Unageo-Regular.ttf') format('woff2');
+}
+
+/* Aileron Fonts */
+@font-face {
+  font-family: 'Aileron';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@/assets/fonts/Aileron/Aileron-Regular.otf') format('woff2');
+}
+
+@font-face {
+  font-family: 'Aileron';
+  font-style: normal;
+  font-weight: 600;
+  src: url('@/assets/fonts/Aileron/Aileron-SemiBold.otf') format('woff2');
+}
+
+body {
+  font-family: 'Aileron';
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.custom-box {
+  @apply bg-white  border border-slate-300;
+}
+.custom-box-with-hover {
+  @apply custom-box hover:bg-slate-100;
+}
