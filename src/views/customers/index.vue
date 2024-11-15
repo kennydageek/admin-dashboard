@@ -88,6 +88,8 @@
             @view-order-history="handleViewOrderHistory"
             @deactivate-account="handleDeactivateAccount"
             @send-email="handleSendEmail"
+            :items="tableArray"
+            :loading="loading"
           />
           <pagination
             class=""
@@ -103,6 +105,9 @@
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="tableArray"
+            :loading="loading"
+
           />
           <pagination
             class=""
@@ -118,6 +123,8 @@
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="tableArray"
+            :loading="loading"
           />
           <pagination
             class=""
@@ -133,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 // import StatCard from './components/StatCard.vue';
 // import Arc from './components/Arc.vue';
 // import LineChart from './components/LineChart.vue';
@@ -141,6 +148,7 @@ import EaTabs from '@/components/EaTabs.vue';
 import Pagination from '@/components/pagination.vue';
 import CustomersTable from './components/CustomersTable.vue';
 import { useRouter } from 'vue-router';
+import { CustomerService } from '@/services';
 
 // const showDateModal = ref(true);
 const showDateModal2 = ref(false);
@@ -148,6 +156,8 @@ const showLocationModal = ref(false);
 const showConfirmPartnerModal = ref(false);
 const showRejectModal = ref(false);
 const showDownloadModal = ref(false);
+const tableArray = ref([]);
+const loading = ref(false);
 
 const confirmStep = ref(1);
 const rejectStep = ref(1);
@@ -259,7 +269,7 @@ const tabs = [
 ];
 
 const handleSelectCustomerProfile = (customer) => {
-  router.push(`/customer/${customer.id}`);
+  router.push(`/customer/${customer._id}`);
   console.log(customer);
 };
 
@@ -274,6 +284,23 @@ const handleDeactivateAccount = (account) => {
 const handleSendEmail = (account) => {
   console.log('email sent');
 };
+
+const fetchCustomers = async () => {
+  try {
+    loading.value = true;
+    const data = await CustomerService.fetchCustomers();
+    tableArray.value = data;
+    console.log(tableArray.value);
+    loading.value = false;
+  } catch (error) {
+    console.error(error);
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchCustomers();
+});
 </script>
 
 <style lang="scss" scoped></style>

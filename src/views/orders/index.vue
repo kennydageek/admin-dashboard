@@ -98,13 +98,14 @@
             @view-order-history="handleViewOrderHistory"
             @deactivate-account="handleDeactivateAccount"
             @send-email="handleSendEmail"
+            :items="orderArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
           />
         </template>
 
@@ -123,13 +124,14 @@
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="orderArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
           />
         </template>
 
@@ -148,13 +150,14 @@
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="orderArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
           />
         </template>
 
@@ -173,13 +176,14 @@
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="orderArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
           />
         </template>
       </EaTabs>
@@ -196,6 +200,7 @@ import EaTabs from '@/components/EaTabs.vue';
 import Pagination from '@/components/pagination.vue';
 import CustomersTable from './components/CustomersTable.vue';
 import { useRouter } from 'vue-router';
+import { OrderService } from '@/services';
 
 // const showDateModal = ref(true);
 const showDateModal2 = ref(false);
@@ -207,6 +212,11 @@ const showDownloadModal = ref(false);
 const confirmStep = ref(1);
 const rejectStep = ref(1);
 const router = useRouter();
+
+const currentPage = ref(1);
+const total = ref(22);
+const perPage = ref(20);
+const loading = ref(false);
 
 const dateArray = ref([
   { text: 'Today - 7/26/2024', value: '7/26/2024' },
@@ -312,6 +322,29 @@ const tabs = [
     name: 'canceled',
   },
 ];
+
+const orderArray = ref([]);
+
+const handlePaginate = (e) => {
+  fetchOrders(e, perPage.value);
+};
+
+const fetchOrders = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await OrderService.fetchOrders({
+      page,
+      limit,
+    });
+    orderArray.value = data.orders;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const handleSelectCustomerProfile = (customer) => {
   router.push(`/customer/${customer.id}`);

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.lascom.everythingafrican",
+      "sha256_cert_fingerprints": [
+        "1D:8F:6A:14:E8:48:E1:E9:E1:3A:A3:0D:6D:C7:EC:53:DE:61:0C:8C:55:FF:A7:E2:13:7D:C6:61:A5:C5:0D:43"
+      ]
+    }
+  }
+]

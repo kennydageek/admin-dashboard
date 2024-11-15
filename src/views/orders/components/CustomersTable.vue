@@ -4,27 +4,34 @@
       <thead>
         <tr class="rounded-[16px]">
           <!-- <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th> -->
-          <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th>
-          <th class="text-sm text-grey-500">Order name</th>
+          <!-- <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th> -->
+          <th class="text-sm text-grey-500">Order Id</th>
           <th class="text-sm text-grey-500">Date</th>
           <th class="text-sm text-grey-500">Price</th>
           <th class="text-sm text-grey-500">Shipping method</th>
-          <th class="text-sm text-grey-500">Payment type</th>
-          <th class="text-sm text-grey-500">Status</th>
+          <th class="text-sm text-grey-500">Payment Status</th>
+          <th class="text-sm text-grey-500">Fulfillment Status</th>
           <!-- <th class="text-sm text-grey-500"></th> -->
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
+        <tr v-for="(item, index) in props.items" :key="index">
           <!-- <td>{{ item.id }}</td> -->
-          <td>#ID</td>
-          <td>Order name</td>
-          <td>Date</td>
+          <!-- <td>{{ index + 1 }}</td> -->
+          <td>{{ item.orderId }}</td>
+          <td>{{ this.$lux(item.createdAt) }}</td>
           <td>Price</td>
-          <td>Shipping method</td>
-          <td>Payment type</td>
+          <td>{{ item.shippingMethod }}</td>
+          <!-- <td>Payment type</td> -->
 
-          <td><p class="text-sm text-primary-500">Active</p></td>
+          <td>
+            <p class="text-sm text-primary-500">{{ item.paymentStatus }}</p>
+          </td>
+          <td>
+            <p class="text-sm text-primary-500">
+              {{ item.fullfillmentStatus }}
+            </p>
+          </td>
           <!-- <td>
             <div class="relative">
               <img
@@ -80,6 +87,16 @@ import { ref } from 'vue';
 
 export default {
   name: 'PaymentHistoryTable',
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props, { emit }) {
     const tableArray = ref([
       {
@@ -138,6 +155,7 @@ export default {
       handleSelectOrderHistory,
       handleSelectDeactivateAccount,
       handleSelectSendEmail,
+      props,
     };
   },
 };

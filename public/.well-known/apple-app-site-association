@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "HK58AJD9QC.com.lascom.everythingafrican",
+        "paths": ["/app/*"]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": ["HK58AJD9QC.com.lascom.everythingafrican"]
+  },
+  "webcredentials": {
+    "apps": ["HK58AJD9QC.com.lascom.everythingafrican"]
+  }
+}

@@ -14,11 +14,11 @@
           <th class="text-sm text-grey-500"></th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
-          <td>{{ item.id }}</td>
-          <td>Customer name</td>
-          <td>Customer email</td>
+      <tbody v-if="props.loading === false">
+        <tr v-for="(item, index) in props?.items" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td>{{ item.firstName }} {{ item.lastName }}</td>
+          <td>{{ item.email }}</td>
           <td>Location</td>
           <td>Shipping method</td>
           <td>Payment type</td>
@@ -74,38 +74,33 @@
         </tr>
       </tbody>
     </table>
+    <div class="flex w-full justify-center mt-10" v-if="props.loading">
+      <ea-spinner small class="mx-auto block" />
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
   name: 'PaymentHistoryTable',
+  props: {
+    items: {
+      type: Array,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props, { emit }) {
-    const tableArray = ref([
-      {
-        id: 1,
-        showModal: false,
-      },
-      {
-        id: 2,
-        showModal: false,
-      },
-      {
-        id: 3,
-        showModal: false,
-      },
-      {
-        id: 4,
-        showModal: false,
-      },
-      {
-        id: 5,
-        showModal: false,
-      },
-    ]);
+    const tableArray = ref([]);
 
+    tableArray.value = props.items;
+    console.log(tableArray.value);
+    // console.log(props.items);
     // Function to toggle the modal for a specific row
     const toggleModal = (item) => {
       item.showModal = !item.showModal;
@@ -140,6 +135,7 @@ export default {
       handleSelectOrderHistory,
       handleSelectDeactivateAccount,
       handleSelectSendEmail,
+      props,
     };
   },
 };

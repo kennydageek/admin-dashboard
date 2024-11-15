@@ -26,32 +26,24 @@
         class="w-full border-neutral-400 pr-3 rounded placeholder:text-base border flex"
       >
         <input
-          type="password"
+          :type="type"
           placeholder="Enter your password"
           v-model="form.password"
           class="w-full block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
         />
-        <img src="@/assets/images/eye-cross.svg" alt="" />
+        <img
+          src="@/assets/images/eye-cross.svg"
+          @click="handleShowPassword"
+          alt=""
+          class="cursor-pointer"
+        />
       </div>
     </div>
 
-    <!-- <p class="text-xs text-neutral-500">
-      <span class="text-error-500">forgot your password?</span
-      ><router-link :to="{ name: 'forgot-password' }"> Reset </router-link>
-    </p> -->
-    <!-- <div class="mt-[42px] flex gap-4">
-      <div class="w-6 h-6 mt-1">
-        <EaInput type="checkbox" class="h-full accent-primary-700" />
-      </div>
-
-      <!-- <p class="text-neutral-700 self-start">
-        Remember me and keep me logged in
-      </p> 
-    </div> -->
     <div class="mt-[42px]">
       <div class="block mb-4">
         <ea-button
-          @click="$router.push({ name: 'overview' })"
+          @click="handleLogin"
           :disabled="form.email === '' || form.password === ''"
         >
           <div class="" v-if="!isLoading">Login</div>
@@ -66,20 +58,22 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import EaButton from '@/components/EaButton.vue';
 // import { AuthService } from '@/services';
+import { AuthService } from '@/services';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
 
-// import { useToast } from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 
 const emit = defineEmits(['loginPage']);
-
+const authStore = useAuthStore();
 const showModal = ref(false);
 const router = useRouter();
 const isLoading = ref(false);
-// const toast = useToast();
+const toast = useToast();
 
 const form = ref({
-  email: '',
-  Password: '',
+  email: 'admin@email.com',
+  password: 'Password@1234',
 });
 
 const cityArray = ref([
@@ -94,6 +88,12 @@ const cityArray = ref([
     selected: false,
   },
 ]);
+
+const type = ref('password');
+
+const handleShowPassword = () => {
+  type.value === 'password' ? (type.value = 'text') : (type.value = 'password');
+};
 
 const handleSelectedCity = (city) => {
   cityArray.value.forEach((c) => {
@@ -113,11 +113,16 @@ onMounted(() => {
 });
 
 const handleLogin = async () => {
+  console.log(form.value);
   try {
     isLoading.value = true;
     const data = await AuthService.login(form.value);
     localStorage.setItem('access_token', data.access_token);
     AuthService.authenticateUser(data.access_token);
+    authStore.SET_USER_DATA(data);
+    console.log(authStore.SET_USER_DATA);
+    router.push({ name: 'overview' });
+    toast.success(data.responseMessage);
     console.log(data);
     isLoading.value = false;
   } catch (error) {

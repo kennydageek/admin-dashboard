@@ -1,0 +1,4 @@
+GetASingleCustomer
+ViewCustomerOrderHistory
+Deactivate Account
+Getting a single order
