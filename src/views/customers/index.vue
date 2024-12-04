@@ -7,7 +7,7 @@
         class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
         @click="showDateModal2 = true"
       >
-        <p class="text-sm">{{ dateFilterValue || 'Filter By Date' }}</p>
+        <p class="text-sm">{{ dateFilterValue || "Filter By Date" }}</p>
         <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
       </button>
 
@@ -15,7 +15,7 @@
         class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
         @click="showLocationModal = true"
       >
-        <p class="text-sm">{{ dateFilterValue || 'All location' }}</p>
+        <p class="text-sm">{{ dateFilterValue || "All location" }}</p>
         <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
       </button>
 
@@ -94,9 +94,9 @@
           <pagination
             class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
           />
         </template>
 
@@ -107,7 +107,6 @@
             @selected-download-action="handleShowDownloadModal"
             :items="tableArray"
             :loading="loading"
-
           />
           <pagination
             class=""
@@ -140,15 +139,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from "vue";
 // import StatCard from './components/StatCard.vue';
 // import Arc from './components/Arc.vue';
 // import LineChart from './components/LineChart.vue';
-import EaTabs from '@/components/EaTabs.vue';
-import Pagination from '@/components/pagination.vue';
-import CustomersTable from './components/CustomersTable.vue';
-import { useRouter } from 'vue-router';
-import { CustomerService } from '@/services';
+import EaTabs from "@/components/EaTabs.vue";
+import Pagination from "@/components/pagination.vue";
+import CustomersTable from "./components/CustomersTable.vue";
+import { useRouter } from "vue-router";
+import { CustomerService } from "@/services";
 
 // const showDateModal = ref(true);
 const showDateModal2 = ref(false);
@@ -163,22 +162,26 @@ const confirmStep = ref(1);
 const rejectStep = ref(1);
 const router = useRouter();
 
+const currentPage = ref(1);
+const total = ref(22);
+const perPage = ref(20);
+
 const dateArray = ref([
-  { text: 'Today - 7/26/2024', value: '7/26/2024' },
-  { text: 'Yesterday - 7/25/2024', value: '7/25/2024' },
-  { text: 'This Week', value: 'This Week' },
-  { text: 'All Time', value: 'All_time' },
-  { text: 'Custom Date', value: 'custom_date' },
+  { text: "Today - 7/26/2024", value: "7/26/2024" },
+  { text: "Yesterday - 7/25/2024", value: "7/25/2024" },
+  { text: "This Week", value: "This Week" },
+  { text: "All Time", value: "All_time" },
+  { text: "Custom Date", value: "custom_date" },
 ]);
 
 const locationArray = ref([
-  { text: 'All location', value: '7/26/2024' },
-  { text: 'Manchester United', value: '7/25/2024' },
-  { text: 'Birmingham', value: 'This Week' },
-  { text: 'Liverpool', value: 'All_time' },
-  { text: 'London', value: 'custom_date' },
+  { text: "All location", value: "7/26/2024" },
+  { text: "Manchester United", value: "7/25/2024" },
+  { text: "Birmingham", value: "This Week" },
+  { text: "Liverpool", value: "All_time" },
+  { text: "London", value: "custom_date" },
 ]);
-const dateFilterValue = ref('');
+const dateFilterValue = ref("");
 
 const onClickAway = () => {
   // showDateModal.value = false;
@@ -193,78 +196,78 @@ const handleSelectDateFilter = (date) => {
 
 const statCardArray = ref([
   {
-    title: 'Income',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Income",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
 
   {
-    title: 'Gross revenue',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Gross revenue",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
 
   {
-    title: 'Total sales',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Total sales",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
   {
-    title: 'Total payment',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Total payment",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
   {
-    title: 'Buyers',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Buyers",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
   {
-    title: 'Partners',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-
-  {
-    title: 'App download',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "Partners",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
 
   {
-    title: 'All users',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
+    title: "App download",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
+  },
+
+  {
+    title: "All users",
+    amount: "209,811",
+    percIncrease: "13%",
+    numIncrease: "18k",
   },
 ]);
 
 const activeTab = ref(0);
 const tabs = [
   {
-    title: 'New Customers(5)',
-    name: 'accepted',
+    title: "New Customers(5)",
+    name: "accepted",
   },
   {
-    title: 'Returning Customers(5)',
-    name: 'pending',
-  },
-
-  {
-    title: 'Inactive Customers(5)',
-    name: 'rejected',
+    title: "Returning Customers(5)",
+    name: "pending",
   },
 
   {
-    title: 'Loyal Customers(5)',
-    name: 'rejected',
+    title: "Inactive Customers(5)",
+    name: "rejected",
+  },
+
+  {
+    title: "Loyal Customers(5)",
+    name: "rejected",
   },
 ];
 
@@ -274,23 +277,32 @@ const handleSelectCustomerProfile = (customer) => {
 };
 
 const handleViewOrderHistory = (customer) => {
-  console.log('order history clicked');
+  console.log("order history clicked");
 };
 
 const handleDeactivateAccount = (account) => {
-  console.log('deactivate account selected');
+  console.log("deactivate account selected");
 };
 
 const handleSendEmail = (account) => {
-  console.log('email sent');
+  console.log("email sent");
 };
 
-const fetchCustomers = async () => {
+const handlePaginate = (e) => {
+  fetchCustomers(e, perPage.value);
+};
+
+const fetchCustomers = async (page, limit) => {
   try {
     loading.value = true;
-    const data = await CustomerService.fetchCustomers();
-    tableArray.value = data;
-    console.log(tableArray.value);
+    const data = await CustomerService.fetchCustomers({
+      page,
+      limit,
+    });
+    tableArray.value = data?.users;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data?.page;
     loading.value = false;
   } catch (error) {
     console.error(error);

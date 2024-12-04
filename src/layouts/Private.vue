@@ -4,7 +4,7 @@
     <!-- <sidebar-mobile class="w-[100%] self-start md:hidden flex" /> -->
 
     <main
-      class="grow px-8 py-[56px] md:px-16 md:ml-[19%] bg-neutral-100 min-h-100"
+      class="grow px-8 py-[56px] md:ml-[19%] bg-neutral-100 min-h-100"
     >
       <slot />
     </main>

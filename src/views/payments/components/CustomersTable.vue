@@ -5,26 +5,28 @@
         <tr class="rounded-[16px]">
           <!-- <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th> -->
           <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th>
-          <th class="text-sm text-grey-500">Order name</th>
-          <th class="text-sm text-grey-500">Date</th>
-          <th class="text-sm text-grey-500">Price</th>
-          <th class="text-sm text-grey-500">Shipping method</th>
+          <th class="text-sm text-grey-500">Amount(£)</th>
+          <th class="text-sm text-grey-500">Transaction date</th>
+          <th class="text-sm text-grey-500">Sender</th>
           <th class="text-sm text-grey-500">Payment type</th>
+          <!-- <th class="text-sm text-grey-500">Order</th> -->
           <th class="text-sm text-grey-500">Status</th>
           <!-- <th class="text-sm text-grey-500"></th> -->
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
+        <tr v-for="(item, index) in props.items" :key="index">
           <!-- <td>{{ item.id }}</td> -->
-          <td>#ID</td>
-          <td>Order name</td>
-          <td>Date</td>
-          <td>Price</td>
-          <td>Shipping method</td>
-          <td>Payment type</td>
+          <td>{{ item.id }}</td>
+          <td>{{ formatAsMoney(item.amount) }}</td>
+          <td>{{ $lux(item.created) }}</td>
+          <!-- <td>Price</td> -->
+          <td>{{ item.source }}</td>
+          <td>{{ item.type }}</td>
 
-          <td><p class="text-sm text-primary-500">Active</p></td>
+          <td>
+            <p class="text-sm text-primary-500">{{ item.status }}</p>
+          </td>
           <!-- <td>
             <div class="relative">
               <img
@@ -77,9 +79,20 @@
 
 <script>
 import { ref } from 'vue';
+import { formatAsMoney } from '@/utils/formatAsmoney.js';
 
 export default {
   name: 'PaymentHistoryTable',
+  props: {
+    items: {
+      type: Array,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props, { emit }) {
     const tableArray = ref([
       {
@@ -138,6 +151,8 @@ export default {
       handleSelectOrderHistory,
       handleSelectDeactivateAccount,
       handleSelectSendEmail,
+      props,
+      formatAsMoney,
     };
   },
 };

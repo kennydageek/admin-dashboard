@@ -68,8 +68,72 @@
 
     <div class="mt-4">
       <p class="text-xl font-semibold font-fontHead mb-4 text-neutral-800">
-        Order history
+        Payment history
       </p>
+
+      <div class="relative flex justify-between">
+        <button
+          class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
+          @click="showDateModal2 = true"
+        >
+          <p class="text-sm">{{ dateFilterValue || 'Filter By Status' }}</p>
+          <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
+        </button>
+
+        <!-- <button
+          class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
+          @click="showLocationModal = true"
+        >
+          <p class="text-sm">{{ dateFilterValue || 'All location' }}</p>
+          <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
+        </button> -->
+
+        <div
+          class="absolute shadow-sm flex top-0 left-[170px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
+          v-show="showDateModal2"
+          v-click-away="
+            () => {
+              showDateModal2 = false;
+            }
+          "
+        >
+          <div
+            v-for="(date, i) in dateArray"
+            :key="`date-range-${i}`"
+            class="p-4"
+          >
+            <p
+              class="text-[18px] cursor-pointer"
+              @click="handleFilterTransaction(date)"
+            >
+              {{ date.text }}
+            </p>
+          </div>
+        </div>
+
+        <!-- <div
+          class="absolute shadow-sm flex top-[50px] right-[-24px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
+          v-show="showLocationModal"
+          v-click-away="
+            () => {
+              showLocationModal = false;
+            }
+          "
+        >
+          <div
+            v-for="(location, i) in locationArray"
+            :key="`date-range-${i}`"
+            class="p-4"
+          >
+            <p
+              class="text-[18px] cursor-pointer"
+              @click="handleSelectDateFilter(location)"
+            >
+              {{ location.text }}
+            </p>
+          </div>
+        </div> -->
+      </div>
       <!-- <div
         class="input-container w-[400px] border border-neutral-400 rounded flex px-3 justify-between"
       >
@@ -83,7 +147,7 @@
 
       <EaTabs :tabs="tabs" v-model:activeTab="activeTab" class="mt-4">
         <template v-slot:all>
-          <div
+          <!-- <div
             class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
           >
             <input
@@ -92,19 +156,15 @@
               class="w-[70%] outline-none py-2 rounded"
             />
             <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
-          </div>
-          <customers-table
-            @view-customer-profile="handleSelectCustomerProfile"
-            @view-order-history="handleViewOrderHistory"
-            @deactivate-account="handleDeactivateAccount"
-            @send-email="handleSendEmail"
-          />
+          </div> -->
+
+          <customers-table :items="paymentArray" />
           <pagination
             class=""
             :current-page="1"
             :total-records="80"
             :per-page="5"
-            @onchange="console.log('kenny')"
+            @onchange="handlePageChange"
           />
         </template>
 
@@ -188,14 +248,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 // import StatCard from './components/StatCard.vue';
 // import Arc from './components/Arc.vue';
 // import LineChart from './components/LineChart.vue';
 import EaTabs from '@/components/EaTabs.vue';
-import Pagination from '@/components/pagination.vue';
+import Pagination from '@/components/PaymentPagination.vue';
 import CustomersTable from './components/CustomersTable.vue';
 import { useRouter } from 'vue-router';
+import PaymentService from '@/services/payment';
+import FilterForm from '@/components/FilterForm.vue';
 
 // const showDateModal = ref(true);
 const showDateModal2 = ref(false);
@@ -209,20 +271,13 @@ const rejectStep = ref(1);
 const router = useRouter();
 
 const dateArray = ref([
-  { text: 'Today - 7/26/2024', value: '7/26/2024' },
-  { text: 'Yesterday - 7/25/2024', value: '7/25/2024' },
-  { text: 'This Week', value: 'This Week' },
-  { text: 'All Time', value: 'All_time' },
-  { text: 'Custom Date', value: 'custom_date' },
+  { text: 'Successful', value: 'success' },
+  { text: 'Failed', value: 'failed' },
+  { text: 'Pending', value: 'pending' },
+  { text: 'Cancelled', value: 'canceled' },
+  { text: 'Refunded', value: 'refunded' },
 ]);
 
-const locationArray = ref([
-  { text: 'All location', value: '7/26/2024' },
-  { text: 'Manchester United', value: '7/25/2024' },
-  { text: 'Birmingham', value: 'This Week' },
-  { text: 'Liverpool', value: 'All_time' },
-  { text: 'London', value: 'custom_date' },
-]);
 const dateFilterValue = ref('');
 
 const onClickAway = () => {
@@ -231,7 +286,12 @@ const onClickAway = () => {
   showLocationModal.value = false;
 };
 
-const handleSelectDateFilter = (date) => {
+const handleFilterTransaction = async (date) => {
+  const data = await PaymentService.filterTransactions({ status: date.value });
+  paymentArray.value = data.data;
+  currentPage.value = data.page;
+  perPage.value = data.per_page;
+  hasMore.value = data.has_more;
   dateFilterValue.value = date.text;
   onClickAway();
 };
@@ -337,6 +397,64 @@ const handleDeactivateAccount = (account) => {
 const handleSendEmail = (account) => {
   console.log('email sent');
 };
+
+const currentPage = ref(1);
+const perPage = ref(20);
+const hasMore = ref(true);
+const paymentArray = ref([]);
+
+const fetchTransactions = async (page) => {
+  const data = await PaymentService.fetchTransactions(page);
+  paymentArray.value = data.data;
+  currentPage.value = data.page;
+  perPage.value = data.per_page;
+  hasMore.value = data.has_more;
+  console.log(data);
+};
+
+const handlePageChange = (page) => {
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchTransactions({ page: page });
+      break;
+    // case 1: // Processing orders
+    //   fetchAllCustomerProcessingOrders(page, perPage.value);
+    //   break;
+    // case 2: // Completed orders
+    //   fetchAllCustomerCompletedOrders(page, perPage.value);
+
+    //   break;
+    // case 3: // Canceled orders
+    //   fetchAllCustomerCancelledOrders(page, perPage.value);
+    //   break;
+    default:
+      fetchTransactions({ page: page });
+  }
+};
+
+watch(activeTab, (newTab) => {
+  switch (newTab) {
+    case 0:
+      fetchTransactions({ page: currentPage.value });
+      break;
+    // case 1:
+    //   fetchAllCustomerProcessingOrders(1, 20);
+    //   break;
+    // // Add cases for other tabs as needed
+    // case 2:
+    //   fetchAllCustomerCompletedOrders(1, 20);
+
+    //   break;
+    // case 3:
+    //   fetchAllCustomerCancelledOrders(1, 20);
+
+    //   break;
+    // default:
+    //   fetchAllCustomerOrders(1, 20);
+  }
+});
+
+// fetchTransactions({ page: currentPage.value });
 </script>
 
 <style lang="scss" scoped></style>

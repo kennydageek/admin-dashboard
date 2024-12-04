@@ -12,10 +12,16 @@
       >
         <input
           type="text"
-          placeholder="Search products by name, price, date"
+          placeholder="Search staffs by name"
           class="w-[70%] outline-none py-2 rounded"
+          v-model="searchInput"
         />
-        <img src="@/assets/svg/search.svg" class="cursor-pointer w-8" alt="" />
+        <img
+          src="@/assets/svg/search.svg"
+          class="cursor-pointer w-8"
+          alt=""
+          @click="handleSearchStaff"
+        />
       </div>
 
       <button
@@ -28,16 +34,19 @@
 
     <div class="my-12">
       <customers-table
+        :staff-data="allStaffData"
+        :is-loading="isLoading"
         @make-staff-admin="handleShowMakeStaffAdminModal"
         @deactivate-staff="handleShowDeactivateStaffModal"
         @delete-account="handleDeleteStaff"
+        @edit-staff="handleEditStaff"
       />
       <pagination
         class="mt-12"
-        :current-page="1"
-        :total-records="80"
-        :per-page="5"
-        @onchange="console.log('kenny')"
+        :current-page="currentPage"
+        :total-records="totalPages"
+        :per-page="itemsPerPage"
+        @onchange="handlePageChange"
       />
     </div>
   </div>
@@ -80,8 +89,8 @@
     }"
   >
     <p class="text-neutral-700 mb-6">
-      You are about to deactivate the staff with this ID number #AB-001 account.
-      Kindly use one of the buttons below
+      You are about to deactivate {{ selectedStaff.firstName }}
+      {{ selectedStaff.lastName }}
     </p>
 
     <div class="flex justify-between gap-[112px] mt-6">
@@ -93,9 +102,10 @@
       </button>
       <button
         class="py-4 w-full px-6 rounded bg-red-500 text-white"
-        @click="showDeactivateStaffModal = false"
+        @click="handleDeactivateStaff"
       >
-        Deactivate
+        <ea-spinner small v-if="loading" />
+        <p v-if="loading === false">Deactivate</p>
       </button>
     </div>
   </ea-modal>
@@ -133,30 +143,111 @@
 <script setup>
 import CustomersTable from './components/CustomersTable.vue';
 import Pagination from '@/components/pagination.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useQuery } from '@tanstack/vue-query';
+import { http } from '@/http/index.js';
+import { StaffService } from '@/services';
+import { useToast } from 'vue-toastification';
+import Spinner from '@/components/EaSpinner.vue';
 
+const searchInput = ref('');
 const showMakeStaffAdminModal = ref(false);
 const showDeactivateStaffModal = ref(false);
 const showDeleteStaffModal = ref(false);
+const currentPage = ref(1);
+const itemsPerPage = ref(12);
+const totalPages = ref(0);
+const allStaffData = ref([]);
+const isLoading = ref(false);
+const loading = ref(false);
+const toast = useToast();
 
 const router = useRouter();
+
+// Fetch all recipes
+// const { data: allStaffData, isLoading } = useQuery({
+//   queryKey: ['allStaffs', currentPage, itemsPerPage],
+//   queryFn: async () => {
+//     const response = await http.get('/admin/getAllStaff', {
+//       params: {
+//         page: currentPage.value,
+//         limit: itemsPerPage.value,
+//       },
+//     });
+//     totalPages.value = response.data.total;
+//     itemsPerPage.value = response.data.limit;
+//     currentPage.value = response.data.page;
+//     console.log(totalPages.value, itemsPerPage.value);
+//     return response.data.admin;
+//   },
+//   keepPreviousData: true,
+//   onError: (error) => {
+//     console.error('Error fetching staff data:', error);
+//     toast.error('Error fetching staffs data.');
+//   },
+// });
+
+const selectedStaff = ref({});
+
+const fetchStaff = async () => {
+  isLoading.value = true;
+  const data = await StaffService.getStaff({ page: currentPage.value });
+  console.log(data);
+  allStaffData.value = data.admin;
+  totalPages.value = data.total;
+  itemsPerPage.value = data.limit;
+  isLoading.value = false;
+};
+
+onMounted(async () => {
+  await fetchStaff();
+});
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+};
+
 const handleShowMakeStaffAdminModal = (e) => {
   console.log(e);
   showMakeStaffAdminModal.value = !showMakeStaffAdminModal.value;
 };
 
 const handleShowDeactivateStaffModal = (e) => {
+  selectedStaff.value = e;
   showDeactivateStaffModal.value = !showDeactivateStaffModal.value;
 };
 
 const handleEditStaff = (e) => {
   console.log(e);
-  router.push(`/staff/${e.id}/edit`);
+  router.push(`/staff/${e._id}/edit`);
 };
 
-const handleDeleteStaff = (e) => {
-  showDeleteStaffModal.value = !showDeleteStaffModal.value;
+const handleSearchStaff = async () => {
+  isLoading.value = true;
+  const data = await StaffService.searchStaff({ name: searchInput.value });
+  allStaffData.value = data.users;
+  totalPages.value = data.total;
+  itemsPerPage.value = data.limit;
+  console.log(data);
+  isLoading.value = false;
+};
+
+const handleDeactivateStaff = async () => {
+  try {
+    const payload = {
+      staffId: selectedStaff.value._id,
+    };
+    console.log(payload);
+    loading.value = true;
+    const data = await StaffService.deactivateStaff(payload);
+    toast.success(data.success);
+    showDeactivateStaffModal.value = false;
+    await fetchStaff();
+  } catch (error) {
+    loading.value = false;
+    console.log(error);
+  }
 };
 </script>
 

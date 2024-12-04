@@ -1,6 +1,6 @@
 <template>
   <ea-navbar />
-  <div class="mt-[42px] p-4 bg-white">
+  <form class="mt-[42px] p-4 bg-white" @submit.prevent="handleAddStaff">
     <div class="">
       <p class="mb-2 font-fontHead text-xl font-semibold text-neutral-800">
         Staff Info
@@ -20,7 +20,8 @@
             type="text"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff first name?"
-            disabled
+            v-model="form.firstName"
+            required
           />
           <!-- <img src="@/assets/svg/lock.svg" alt="" /> -->
         </div>
@@ -35,7 +36,8 @@
             type="text"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff last name?"
-            disabled
+            v-model="form.lastName"
+            required
           />
           <!-- <img src="@/assets/svg/arrow_down.svg" alt="" /> -->
         </div>
@@ -56,7 +58,8 @@
             type="email"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff email?"
-            disabled
+            v-model="form.email"
+            required
           />
           <!-- <img src="@/assets/svg/lock.svg" alt="" /> -->
         </div>
@@ -73,7 +76,8 @@
             type="text"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff phone number?"
-            disabled
+            v-model="form.phoneNumber"
+            required
           />
           <!-- <img src="@/assets/svg/arrow_down.svg" alt="" /> -->
         </div>
@@ -95,6 +99,8 @@
             type="date"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff first name?"
+            v-model="form.startDate"
+            required
           />
           <!-- <img src="@/assets/svg/lock.svg" alt="" /> -->
         </div>
@@ -111,6 +117,8 @@
             type="date"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff last name?"
+            v-model="form.dateOfBirth"
+            required
           />
           <!-- <img src="@/assets/svg/arrow_down.svg" alt="" /> -->
         </div>
@@ -126,14 +134,14 @@
           class="w-full bg-white border-neutral-400 pr-3 rounded placeholder:text-base border flex"
         >
           <select
-            type="date"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
-            placeholder="What is the staff first name?"
+            placeholder=""
+            v-model="form.gender"
           >
             <option>Select the staff gender</option>
-            <option>Male</option>
-            <option>Femaile</option>
-            <option>Prefer not to say</option>
+            <option value="male">Male</option>
+            <option value="female">Femaile</option>
+            <option value="prefer not to say">Prefer not to say</option>
           </select>
           <!-- <img src="@/assets/svg/lock.svg" alt="" /> -->
         </div>
@@ -145,14 +153,15 @@
           class="w-full bg-white border-neutral-400 pr-3 rounded placeholder:text-base border flex"
         >
           <select
-            type="date"
             class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
             placeholder="What is the staff last name?"
+            v-model="form.staffRole"
+            required
           >
-            <option>General Manager</option>
-            <option>General Admin</option>
-            <option>General Staff</option>
-            <option>Guest</option>
+            <option value="General Manager">General Manager</option>
+            <option value="General Admin">General Admin</option>
+            <option value="General Staff">General Staff</option>
+            <option value="General Guest">Guest</option>
           </select>
           <!-- <img src="@/assets/svg/arrow_down.svg" alt="" /> -->
         </div>
@@ -161,7 +170,7 @@
 
     <div class="mt-6">
       <p class="text-xl font-fontHead font-semibold text-neutral-800 mb-2">
-        Email and Password
+        Password
       </p>
 
       <p class="text-neutral-700">
@@ -169,21 +178,6 @@
       </p>
 
       <div class="flex flex-col md:flex-row md:gap-6 mt-4">
-        <div class="mb-4 grow w-full md:w-[50%]">
-          <p class="text-[18px] font-fontHead text-neutral-800 mb-2">Email</p>
-
-          <div
-            class="w-full bg-white border-neutral-400 pr-0 rounded placeholder:text-base border flex"
-          >
-            <input
-              type="email"
-              class="w-full bg-white block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
-              placeholder="ibrahimajose@gmail.com"
-            />
-            <!-- <img src="@/assets/svg/lock.svg" alt="" /> -->
-          </div>
-        </div>
-
         <div class="mb-2 w-full md:w-[50%] grow">
           <p class="text-[18px] font-fontHead text-neutral-800 mb-2">
             Password
@@ -193,9 +187,30 @@
           >
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder="Enter password"
               class="w-full block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
+              v-model="form.password"
+              required
             />
+            <img src="@/assets/images/eye-cross.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="mb-2 w-full md:w-[50%]">
+          <p class="text-[18px] font-fontHead text-neutral-800 mb-2">
+            Confirm Password
+          </p>
+          <div
+            class="w-full border-neutral-400 pr-3 rounded placeholder:text-base border flex"
+          >
+            <input
+              type="password"
+              placeholder="Enter passsword"
+              class="w-full block p-3 border-neutral-400 rounded placeholder:text-base placeholder:text-neutral-700 text-neutral-500"
+              v-model="confirmPassword"
+              required
+            />
+
             <img src="@/assets/images/eye-cross.svg" alt="" />
           </div>
         </div>
@@ -207,9 +222,53 @@
     >
       Add Staff
     </button>
-  </div>
+  </form>
 </template>
 
-<script setup></script>
+<script setup>
+import { StaffService } from '@/services';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+const loading = ref(false);
+const router = useRouter();
+
+const form = ref({
+  email: '',
+  firstName: '',
+  lastName: '',
+  gender: '',
+  phoneNumber: '',
+  startDate: '',
+  dateOfBirth: '',
+  password: '',
+  staffRole: '',
+});
+const confirmPassword = ref('');
+
+const handleAddStaff = async () => {
+  if (form.value.password !== confirmPassword.value) {
+    toast.error('Password and confirm Password not the same');
+    return;
+  }
+  try {
+    loading.value = true;
+    const payload = {
+      ...form.value,
+      dateOfBirth: new Date(form.value.dateOfBirth).toISOString().split('T')[0],
+      startDate: new Date(form.value.startDate).toISOString().split('T')[0],
+    };
+    const data = await StaffService.createStaff(payload);
+    toast.success(data.message);
+    console.log(data);
+    loading.value = false;
+    router.push('/staff');
+  } catch (error) {
+    loading.value = false;
+  }
+};
+</script>
 
 <style lang="scss" scoped></style>

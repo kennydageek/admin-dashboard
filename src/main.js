@@ -14,6 +14,7 @@ import EaModal from '@/components/EaModal.vue';
 // import EaSelect from '@/components/global/EaSelect.vue';
 import EaSpinner from '@/components/EaSpinner.vue';
 import EaNavbar from '@/components/EaNavbar.vue';
+import { VueQueryPlugin } from "@tanstack/vue-query";
 
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
@@ -39,6 +40,7 @@ app.use(VueLuxon, {
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
+app.use(VueQueryPlugin);
 app.use(pinia);
 app.use(router);
 app.use(Toast, {

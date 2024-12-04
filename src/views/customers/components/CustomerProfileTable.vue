@@ -8,20 +8,38 @@
           <th class="text-sm text-grey-500">Date</th>
           <th class="text-sm text-grey-500">Price</th>
           <th class="text-sm text-grey-500">Shipping method</th>
-          <th class="text-sm text-grey-500">Payment type</th>
-          <th class="text-sm text-grey-500">Status</th>
+          <!-- <th class="text-sm text-grey-500">Payment type</th> -->
+          <th class="text-sm text-grey-500">Fulfilment Status</th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
-          <td>{{ item.id }}</td>
-          <td>Order name</td>
-          <td>Date</td>
-          <td>Price</td>
-          <td>Shipping method</td>
-          <td>Payment type</td>
 
-          <td><p class="text-sm text-primary-500">Active</p></td>
+      <tbody>
+        <tr v-if="props.loading">
+          loading...
+        </tr>
+        <tr
+          v-for="(item, index) in props.tableArray"
+          :key="index"
+          v-else-if="props.loading === false && props.tableArray.length > 0"
+        >
+          <td>{{ item._id }}</td>
+          <td>{{ item.orderId }}</td>
+          <td>{{ this.$lux(item.createdAt) }}</td>
+          <td>{{ item.grandTotal }}</td>
+          <td>{{ item.shippingMethod }}</td>
+          <!-- <td>Payment type</td> -->
+
+          <td>
+            <p class="text-sm text-primary-500">
+              {{ item.fullfillmentStatus }}
+            </p>
+          </td>
+        </tr>
+        <tr
+          v-else-if="props.loading === false && props.tableArray.length === 0"
+          class="block mt-5"
+        >
+          No orders yet
         </tr>
       </tbody>
     </table>
@@ -33,6 +51,17 @@ import { ref } from 'vue';
 
 export default {
   name: 'PaymentHistoryTable',
+  props: {
+    tableArray: {
+      type: Array,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   setup(props, { emit }) {
     const tableArray = ref([
       {
@@ -99,6 +128,7 @@ export default {
       handleSelectOrderHistory,
       handleSelectDeactivateAccount,
       handleSelectSendEmail,
+      props,
     };
   },
 };

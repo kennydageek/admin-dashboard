@@ -43,7 +43,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { NotificationService } from '@/services';
+import { onMounted, ref } from 'vue';
 
 const isProfileUpdatesChecked = ref(false);
 
@@ -150,6 +151,16 @@ const notifications = [
     subTitle: 'Notifications about billing errors or payment failures',
   },
 ];
+
+const fetchNotifications = async () => {
+  const data = await NotificationService.fetchNotifications();
+  notifications.value;
+  console.log(data);
+};
+
+onMounted(async () => {
+  await fetchNotifications();
+});
 </script>
 
 <style scoped>

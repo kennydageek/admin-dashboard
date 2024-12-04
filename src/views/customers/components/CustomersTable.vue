@@ -6,9 +6,9 @@
           <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th>
           <th class="text-sm text-grey-500">Customer name</th>
           <th class="text-sm text-grey-500">Customer email</th>
-          <th class="text-sm text-grey-500">Location</th>
-          <th class="text-sm text-grey-500">Shipping method</th>
-          <th class="text-sm text-grey-500">Payment type</th>
+          <!-- <th class="text-sm text-grey-500">Location</th> -->
+          <!-- <th class="text-sm text-grey-500">Shipping method</th> -->
+          <!-- <th class="text-sm text-grey-500">Payment type</th> -->
           <th class="text-sm text-grey-500">Phone number</th>
           <th class="text-sm text-grey-500">Status</th>
           <th class="text-sm text-grey-500"></th>
@@ -19,10 +19,10 @@
           <td>{{ index + 1 }}</td>
           <td>{{ item.firstName }} {{ item.lastName }}</td>
           <td>{{ item.email }}</td>
-          <td>Location</td>
-          <td>Shipping method</td>
-          <td>Payment type</td>
-          <td>Phone number</td>
+          <!-- <td>Location</td> -->
+          <!-- <td>Shipping method</td> -->
+          <!-- <td>Payment type</td> -->
+          <td>{{ item.phoneNumber }}</td>
           <td><p class="text-sm text-primary-500">Active</p></td>
           <td>
             <div class="relative">
@@ -47,12 +47,12 @@
                   <p class="text-[18px]">View Customer Profile</p>
                 </div>
 
-                <div
+                <!-- <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
                   @click="handleSelectOrderHistory(item)"
                 >
                   <p class="text-[18px]">View Order History</p>
-                </div>
+                </div> -->
 
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
@@ -61,12 +61,12 @@
                   <p class="text-[18px]">Deactivate Account</p>
                 </div>
 
-                <div
+                <!-- <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
                   @click="handleSelectSendEmail(item)"
                 >
                   <p class="text-[18px]">Send Email</p>
-                </div>
+                </div> -->
                 <!-- Example: Add more content here -->
               </div>
             </div>
@@ -145,17 +145,26 @@ export default {
 th,
 td {
   padding: 12px;
-  text-align: center;
+  text-align: left;
 }
 
 td {
-  padding: 0 16px 0 16px;
+  border: 1px solid #eee;
+  padding: 0 10px 0 10px;
   height: 72px;
   font-size: 14px;
   color: #344054;
 }
 
+td:nth-child(1) {
+  background-color: #f9fafa;
+  font-size: 14px;
+  font-family: 'Aileron';
+  color: #131826;
+}
+
 th {
+  border: 1px solid #eee;
   background-color: #f9fafa;
   padding: 16px 8px;
   font-size: 14px;
