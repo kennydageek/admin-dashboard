@@ -15,7 +15,7 @@
         class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
         @click="showLocationModal = true"
       >
-        <p class="text-sm">{{ dateFilterValue || 'All location' }}</p>
+        <p class="text-sm">{{ locationFilterValue || 'All location' }}</p>
         <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
       </button>
 
@@ -58,7 +58,7 @@
         >
           <p
             class="text-[18px] cursor-pointer"
-            @click="handleSelectDateFilter(location)"
+            @click="handleSelectLocationFilter(location)"
           >
             {{ location.text }}
           </p>
@@ -234,6 +234,7 @@ const locationArray = ref([
   { text: 'London', value: 'custom_date' },
 ]);
 const dateFilterValue = ref('');
+const locationFilterValue = ref('');
 
 const onClickAway = () => {
   // showDateModal.value = false;
@@ -243,6 +244,11 @@ const onClickAway = () => {
 
 const handleSelectDateFilter = (date) => {
   dateFilterValue.value = date.text;
+  onClickAway();
+};
+
+const handleSelectLocationFilter = (date) => {
+  locationFilterValue.value = date.text;
   onClickAway();
 };
 

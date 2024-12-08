@@ -29,10 +29,10 @@ const tabs = [
     title: 'Push Notification Settings',
     name: 'push',
   },
-  {
-    title: 'App Settings',
-    name: 'app',
-  },
+  // {
+  //   title: 'App Settings',
+  //   name: 'app',
+  // },
 
   {
     title: 'Media Upload',

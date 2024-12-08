@@ -1,31 +1,36 @@
 <template>
-  <div class="">
+  <div v-if="isLoading">Loading...</div>
+
+  <div v-else class="">
     <table class="w-full">
       <thead>
         <tr class="rounded-[16px]">
-          <!-- <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th> -->
           <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th>
-          <th class="text-sm text-grey-500">Sender</th>
+          <th class="text-sm text-grey-500">Name</th>
           <th class="text-sm text-grey-500">Email</th>
           <th class="text-sm text-grey-500">Platform</th>
-          <th class="text-sm text-grey-500">Feedback</th>
-          <th class="text-sm text-grey-500">Date & Time</th>
+          <th class="text-sm text-grey-500">About</th>
+          <th class="text-sm text-grey-500">Feature</th>
+          <th class="text-sm text-grey-500">Date</th>
+
           <th class="text-sm text-grey-500">Status</th>
-          <!-- <th class="text-sm text-grey-500"></th> -->
+          <th class="text-sm text-grey-500">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
-          <!-- <td>{{ item.id }}</td> -->
-          <td>#ID</td>
-          <td>Sender</td>
-          <td>Email</td>
-          <td>Website</td>
-          <td>Type</td>
-          <td>Date & Time</td>
+        <tr v-for="(item, index) in staffData" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td>{{ item.sender }}</td>
+          <td>{{ item.email || 'N/A' }}</td>
+          <td>{{ item.platform || 'N/A' }}</td>
+          <td>{{ item.about || 'N/A' }}</td>
+          <td>{{ item.featureOrExperience || 'N/A' }}</td>
+          <td>{{ formatDateTime(item.createdAt) || 'N/A' }}</td>
+          <td>
+            <p class="text-sm text-primary-500">{{ item.status }}</p>
+          </td>
 
-          <td><p class="text-sm text-primary-500">Completed</p></td>
-          <!-- <td>
+          <td>
             <div class="relative">
               <img
                 src="@/assets/svg/dots-vertical.svg"
@@ -34,112 +39,104 @@
                 @click="toggleModal(item)"
               />
 
+              <!-- Only show modal for the specific row -->
               <div
                 v-if="item.showModal"
-                class="absolute z-[10000] shadow-lg top-[30px] right-[-80px] bg-white w-[284px] rounded-bl-lg rounded-r-lg py-6 px-4 !text-left"
+                class="absolute z-[10000] shadow-lg top-[30px] right-[-20px] bg-white w-[284px] rounded-bl-lg rounded-r-lg py-6 px-4 !text-left"
                 v-click-away="() => closeModal(item)"
               >
+                <!-- Content inside the modal -->
+                <!-- <div
+                  class="p-4 cursor-pointer hover:bg-neutral-50"
+                  @click="handleSelectMakeStaffAdmin(item)"
+                >
+                  <p class="text-[18px]">Make Staff admin</p>
+                </div> -->
+
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectCustomerProfile(item)"
+                  @click="handleViewDetails(item)"
                 >
-                  <p class="text-[18px]">View Customer Profile</p>
+                  <p class="text-[18px]">View Details</p>
                 </div>
 
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectOrderHistory(item)"
+                  @click="handleSelectDeactivateStaff(item)"
                 >
-                  <p class="text-[18px]">View Order History</p>
+                  <p class="text-[18px] text-red-500">Deactivate Staff</p>
                 </div>
-
-                <div
-                  class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectDeactivateAccount(item)"
-                >
-                  <p class="text-[18px]">Deactivate Account</p>
-                </div>
-
-                <div
-                  class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectSendEmail(item)"
-                >
-                  <p class="text-[18px]">Send Email</p>
-                </div>
+                <!-- Example: Add more content here -->
               </div>
             </div>
-          </td> -->
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
+import { defineEmits } from 'vue';
 
-export default {
-  name: 'PaymentHistoryTable',
-  setup(props, { emit }) {
-    const tableArray = ref([
-      {
-        id: 1,
-        showModal: false,
-      },
-      {
-        id: 2,
-        showModal: false,
-      },
-      {
-        id: 3,
-        showModal: false,
-      },
-      {
-        id: 4,
-        showModal: false,
-      },
-      {
-        id: 5,
-        showModal: false,
-      },
-    ]);
-
-    // Function to toggle the modal for a specific row
-    const toggleModal = (item) => {
-      item.showModal = !item.showModal;
-    };
-
-    // Function to close the modal for a specific row
-    const closeModal = (item) => {
-      item.showModal = false;
-    };
-
-    const handleSelectCustomerProfile = (item) => {
-      emit('view-customer-profile', item);
-    };
-
-    const handleSelectOrderHistory = (item) => {
-      emit('view-order-history', item);
-    };
-
-    const handleSelectDeactivateAccount = (item) => {
-      emit('deactivate-account', item);
-    };
-
-    const handleSelectSendEmail = (item) => {
-      emit('send-email', item);
-    };
-
-    return {
-      tableArray,
-      toggleModal,
-      closeModal,
-      handleSelectCustomerProfile,
-      handleSelectOrderHistory,
-      handleSelectDeactivateAccount,
-      handleSelectSendEmail,
-    };
+const props = defineProps({
+  staffData: {
+    type: Array,
+    required: true,
   },
+  isLoading: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['view-details']);
+
+const tableArray = ref([
+  {
+    id: 1,
+    showModal: false,
+  },
+  {
+    id: 2,
+    showModal: false,
+  },
+  {
+    id: 3,
+    showModal: false,
+  },
+  {
+    id: 4,
+    showModal: false,
+  },
+  {
+    id: 5,
+    showModal: false,
+  },
+]);
+
+// Function to toggle the modal for a specific row
+const toggleModal = (item) => {
+  item.showModal = !item.showModal;
+};
+
+// Function to close the modal for a specific row
+const closeModal = (item) => {
+  item.showModal = false;
+};
+
+const handleViewDetails = (item) => {
+  emit('view-details', item);
+  toggleModal(item);
+};
+
+const formatDateTime = (dateString) => {
+  return new Date(dateString).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 };
 </script>
 
@@ -147,17 +144,26 @@ export default {
 th,
 td {
   padding: 12px;
-  text-align: center;
+  text-align: left;
 }
 
 td {
-  padding: 0 16px 0 16px;
+  border: 1px solid #ccc;
+  padding: 0 10px 0 10px;
   height: 72px;
   font-size: 14px;
   color: #344054;
 }
 
+td:nth-child(1) {
+  background-color: #f9fafa;
+  font-size: 14px;
+  font-family: 'Aileron';
+  color: #131826;
+}
+
 th {
+  border: 1px solid #ccc;
   background-color: #f9fafa;
   padding: 16px 8px;
   font-size: 14px;

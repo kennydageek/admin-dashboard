@@ -49,6 +49,11 @@ const generalLinks = [
   },
 
   {
+    name: 'Categories',
+    to: 'categories',
+  },
+
+  {
     name: 'Orders',
     to: 'orders',
   },

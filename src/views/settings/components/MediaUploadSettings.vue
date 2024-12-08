@@ -34,22 +34,8 @@
         <p class="text-xl font-fontHead text-neutral-800">Upload Media</p>
 
         <div class="mt-2 flex gap-2.5">
-          <div
-            class="w-[242px] h-[201.02px] bg-white flex justify-center items-center"
-          >
-            <img src="@/assets/svg/upload-image.svg" alt="" />
-          </div>
-
-          <div
-            class="w-[242px] h-[201.02px] bg-white flex justify-center items-center"
-          >
-            <img src="@/assets/svg/upload-image.svg" alt="" />
-          </div>
-
-          <div
-            class="w-[242px] h-[201.02px] bg-white flex justify-center items-center"
-          >
-            <img src="@/assets/svg/upload-image.svg" alt="" />
+          <div class="w-[200px] flex justify-center items-center">
+            <image-upload @updateImageUrl="updateImageUrl" :key="uploadKey" />
           </div>
         </div>
 
@@ -57,14 +43,16 @@
           Note: all images uploaded should be 25MB
         </p>
       </div>
-
-      <button
-        class="mt-[75px] w-[60%] py-4 bg-primary-500 rounded text-[18px] text-white"
-      >
-        Push Notification
-      </button>
     </div>
   </div>
+  <button
+    type="submit"
+    class="mt-[75px] w-[60%] py-4 bg-primary-500 rounded text-[18px] text-white"
+    @click="handleMediaUpload"
+  >
+    <ea-spinner small v-if="loading" />
+    <p v-else>Upload Media</p>
+  </button>
 
   <ea-modal
     @close-modal="showMediaModal = false"
@@ -78,7 +66,7 @@
       class="border rounded border-neutral-400 bg-white py-4 px-3 flex justify-between cursor-pointer mt-6"
       v-for="(media, i) in mediaArray"
       :key="`media-${media.id}`"
-      @click="handleSelectedMediaSection(media)"
+      @click="handleSelectedMedia(media)"
     >
       <p class="text-neutral-700 text-[18px]">{{ media.text }}</p>
       <img src="@/assets/svg/circle-checked.svg" alt="" v-if="media.selected" />
@@ -117,11 +105,22 @@
 
 <script setup>
 import { ref } from 'vue';
+import ImageUpload from '@/components/ImageUpload.vue';
+import { NotificationService } from '@/services';
+import { useToast } from 'vue-toastification';
+import { useRouter } from 'vue-router';
+
 const mediaType = ref('');
 const mediaSectionType = ref('');
 const showMediaSectionModal = ref(false);
 const showUploadSection = ref(false);
 const showMediaModal = ref(false);
+const imageUrl = ref('');
+const loading = ref(false);
+const toast = useToast();
+const uploadKey = ref(0);
+
+const router = useRouter();
 
 const mediaArray = ref([
   {
@@ -181,6 +180,33 @@ const handleSelectedMediaSection = (category) => {
   showUploadSection.value = true;
 
   // console.log(cityArray.value);
+};
+
+const updateImageUrl = (e) => {
+  imageUrl.value = e;
+};
+
+const handleMediaUpload = async () => {
+  try {
+    loading.value = true;
+
+    console.log('dkd');
+    const payload = {
+      mediaDestination: mediaSectionType.value,
+      mediaSection: mediaType.value,
+      imageUrl: imageUrl.value,
+    };
+    console.log(payload);
+    const data = await NotificationService.uploadMedia(payload);
+    toast.success(data.message);
+    mediaSectionType.value = '';
+    mediaType.value = '';
+    uploadKey.value += 1;
+    router.push('/settings');
+    loading.value = false;
+  } catch (error) {
+    loading.value = false;
+  }
 };
 </script>
 

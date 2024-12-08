@@ -34,3 +34,16 @@ export const DEACTIVATATE_STAFF = '/admin/deactivateStaff';
 
 // Notifications
 export const GET_NOTIFICATIONS = '/admin/getUserNotificationSettings';
+export const PUSH_NOTIFICATIONS = '/admin/sendPushNotification';
+export const UPLOAD_MEDIA = '/admin/mediaUpload';
+
+// Eedbacks
+export const GET_FEEDBACKS = '/admin/getAllFeedback';
+export const GET_MARKETPLACE_FEEDBACK = '/admin/getMarketplaceFeedback';
+export const GET_PARTNER_FEEDBACK = '/admin/getPartnerFeedback';
+export const GET_RECIPE_FEEDBACK = '/admin/getRecipeFeedback';
+export const GET_GENERAL_FEEDBACK = '/admin/getGeneralFeedback';
+
+// Categories
+export const GET_CATEGORIES = '/category/findAll';
+export const CREATE_CATEGORY = '/admin/createCategory';

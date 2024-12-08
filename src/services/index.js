@@ -4,6 +4,8 @@ import PartnerService from './partners.js';
 import OrderService from './orders.js';
 import StaffService from './staff.js';
 import NotificationService from './notification.js';
+import FeedbackService from './feedback.js';
+import CategoryService from './category.js';
 
 export {
   AuthService,
@@ -12,4 +14,6 @@ export {
   OrderService,
   StaffService,
   NotificationService,
+  FeedbackService,
+  CategoryService,
 };

@@ -4,6 +4,7 @@ import Overview from '@/views/overview/overview.vue';
 import Customers from '@/views/customers/index.vue';
 import Customer from '@/views/customers/CustomerProfile.vue';
 import Partners from '@/views/partners/index.vue';
+import Categories from '@/views/categories/index.vue';
 import Orders from '@/views/orders/index.vue';
 import Payments from '@/views/payments/index.vue';
 import Notifications from '@/views/notifications/index.vue';
@@ -66,6 +67,16 @@ const router = createRouter({
       path: '/partners',
       name: 'partners',
       component: Partners,
+      meta: {
+        title: 'Partners',
+        layout: 'private',
+      },
+    },
+
+    {
+      path: '/categories',
+      name: 'categories',
+      component: Categories,
       meta: {
         title: 'Partners',
         layout: 'private',

@@ -14,4 +14,25 @@ export default class NotificationService {
       toast.error(err.response.data.message);
     }
   }
+
+  static async pushNotification(payload) {
+    try {
+      const { data } = await http.post(ENDPOINTS.PUSH_NOTIFICATIONS, payload);
+
+      return data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  }
+
+  static async uploadMedia(payload) {
+    try {
+      const { data } = await http.post(ENDPOINTS.UPLOAD_MEDIA, payload);
+
+      return data;
+    } catch (err) {
+      console.log(err);
+      // toast.error(err.response.message);
+    }
+  }
 }

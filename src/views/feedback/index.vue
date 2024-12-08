@@ -2,84 +2,10 @@
   <ea-navbar />
 
   <div class="my-[42px] bg-white p-6">
-    <!-- <div class="relative flex justify-between">
-      <button
-        class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
-        @click="showDateModal2 = true"
-      >
-        <p class="text-sm">{{ dateFilterValue || 'Filter By Date' }}</p>
-        <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
-      </button>
-
-      <button
-        class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
-        @click="showLocationModal = true"
-      >
-        <p class="text-sm">{{ dateFilterValue || 'All location' }}</p>
-        <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
-      </button>
-
-      <div
-        class="absolute shadow-sm flex top-0 left-[170px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
-        v-show="showDateModal2"
-        v-click-away="
-          () => {
-            showDateModal2 = false;
-          }
-        "
-      >
-        <div
-          v-for="(date, i) in dateArray"
-          :key="`date-range-${i}`"
-          class="p-4"
-        >
-          <p
-            class="text-[18px] cursor-pointer"
-            @click="handleSelectDateFilter(date)"
-          >
-            {{ date.text }}
-          </p>
-        </div>
-      </div>
-
-      <div
-        class="absolute shadow-sm flex top-[50px] right-[-24px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
-        v-show="showLocationModal"
-        v-click-away="
-          () => {
-            showLocationModal = false;
-          }
-        "
-      >
-        <div
-          v-for="(location, i) in locationArray"
-          :key="`date-range-${i}`"
-          class="p-4"
-        >
-          <p
-            class="text-[18px] cursor-pointer"
-            @click="handleSelectDateFilter(location)"
-          >
-            {{ location.text }}
-          </p>
-        </div>
-      </div>
-    </div> -->
-
     <div class="mt-4">
       <p class="text-xl font-semibold font-fontHead mb-4 text-neutral-800">
         Feedback
       </p>
-      <!-- <div
-        class="input-container w-[400px] border border-neutral-400 rounded flex px-3 justify-between"
-      >
-        <input
-          type="text"
-          placeholder="Search buyers by name, email, phone number"
-          class="w-full outline-none py-2 rounded"
-        />
-        <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
-      </div> -->
 
       <EaTabs :tabs="tabs" v-model:activeTab="activeTab" class="mt-4">
         <template v-slot:all>
@@ -94,21 +20,20 @@
             <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
           </div> -->
           <customers-table
-            @view-customer-profile="handleSelectCustomerProfile"
-            @view-order-history="handleViewOrderHistory"
-            @deactivate-account="handleDeactivateAccount"
-            @send-email="handleSendEmail"
+            :staffData="feedbackArray"
+            :isLoading="isLoading"
+            @view-details="viewDetails"
           />
           <pagination
-            class=""
+            class="mt-5"
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="20"
+            @onchange="handlePageChange"
           />
         </template>
 
-        <template v-slot:product>
+        <template v-slot:marketplace>
           <!-- <div
             class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
           >
@@ -120,20 +45,20 @@
             <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
           </div> -->
           <customers-table
-            @selected-action="handleShowConfirmPartnerModal"
-            @selected-reject-action="handleShowRejectModal"
-            @selected-download-action="handleShowDownloadModal"
+            :staffData="feedbackArray"
+            :isLoading="isLoading"
+            @view-details="viewDetails"
           />
           <pagination
-            class=""
+            class="mt-5"
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="20"
+            @onchange="handlePageChange"
           />
         </template>
 
-        <template v-slot:delivery>
+        <template v-slot:partner>
           <!-- <div
             class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
           >
@@ -145,50 +70,77 @@
             <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
           </div> -->
           <customers-table
-            @selected-action="handleShowConfirmPartnerModal"
-            @selected-reject-action="handleShowRejectModal"
-            @selected-download-action="handleShowDownloadModal"
+            :staffData="feedbackArray"
+            :isLoading="isLoading"
+            @view-details="viewDetails"
           />
           <pagination
-            class=""
+            class="mt-5"
             :current-page="1"
-            :total-records="80"
+            :total-records="total"
             :per-page="5"
-            @onchange="console.log('kenny')"
+            @onchange="handlePageChange"
+          />
+        </template>
+
+        <template v-slot:recipe>
+          <customers-table
+            :staffData="feedbackArray"
+            :isLoading="isLoading"
+            @view-details="viewDetails"
+          />
+          <pagination
+            class="mt-5"
+            :current-page="1"
+            :total-records="total"
+            :per-page="5"
+            @onchange="handlePageChange"
           />
         </template>
 
         <template v-slot:general>
-          <!-- <div
-            class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
-          >
-            <input
-              type="text"
-              placeholder="Search products by name, price, date"
-              class="w-[70%] outline-none py-2 rounded"
-            />
-            <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
-          </div> -->
           <customers-table
-            @selected-action="handleShowConfirmPartnerModal"
-            @selected-reject-action="handleShowRejectModal"
-            @selected-download-action="handleShowDownloadModal"
+            :staffData="feedbackArray"
+            :isLoading="isLoading"
+            @view-details="viewDetails"
           />
           <pagination
-            class=""
+            class="mt-5"
             :current-page="1"
-            :total-records="80"
+            :total-records="total"
             :per-page="5"
-            @onchange="console.log('kenny')"
+            @onchange="handlePageChange"
           />
         </template>
       </EaTabs>
     </div>
   </div>
+
+  <ea-modal
+    @close-modal="showModal = false"
+    :setup="{
+      modalActive: showModal,
+      modalTitle: 'Details',
+      isVerification: false,
+    }"
+  >
+    <div class="flex gap-10">
+      <p class="text-xl">Platform:</p>
+      <p>{{ selectedDetails.platform }}</p>
+    </div>
+    <div class="flex gap-10">
+      <p class="text-xl">about:</p>
+      <p>{{ selectedDetails.about }}</p>
+    </div>
+    <div class="flex gap-10">
+      <p class="text-xl">Details:</p>
+      <p>{{ selectedDetails.details }}</p>
+    </div>
+  </ea-modal>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 // import StatCard from './components/StatCard.vue';
 // import Arc from './components/Arc.vue';
 // import LineChart from './components/LineChart.vue';
@@ -196,34 +148,10 @@ import EaTabs from '@/components/EaTabs.vue';
 import Pagination from '@/components/pagination.vue';
 import CustomersTable from './components/CustomersTable.vue';
 import { useRouter } from 'vue-router';
+import { FeedbackService } from '@/services';
 
-// const showDateModal = ref(true);
-const showDateModal2 = ref(false);
-const showLocationModal = ref(false);
-const showConfirmPartnerModal = ref(false);
-const showRejectModal = ref(false);
-const showDownloadModal = ref(false);
-
-const confirmStep = ref(1);
-const rejectStep = ref(1);
 const router = useRouter();
-
-const dateArray = ref([
-  { text: 'Today - 7/26/2024', value: '7/26/2024' },
-  { text: 'Yesterday - 7/25/2024', value: '7/25/2024' },
-  { text: 'This Week', value: 'This Week' },
-  { text: 'All Time', value: 'All_time' },
-  { text: 'Custom Date', value: 'custom_date' },
-]);
-
-const locationArray = ref([
-  { text: 'All location', value: '7/26/2024' },
-  { text: 'Manchester United', value: '7/25/2024' },
-  { text: 'Birmingham', value: 'This Week' },
-  { text: 'Liverpool', value: 'All_time' },
-  { text: 'London', value: 'custom_date' },
-]);
-const dateFilterValue = ref('');
+const showModal = ref(false);
 
 const onClickAway = () => {
   // showDateModal.value = false;
@@ -243,13 +171,18 @@ const tabs = [
     name: 'all',
   },
   {
-    title: 'Product',
-    name: 'product',
+    title: 'Marketplace',
+    name: 'marketplace',
   },
 
   {
-    title: 'Delivery',
-    name: 'delivery',
+    title: 'Partner',
+    name: 'partner',
+  },
+
+  {
+    title: 'Recipe',
+    name: 'recipe',
   },
 
   {
@@ -258,22 +191,118 @@ const tabs = [
   },
 ];
 
-const handleSelectCustomerProfile = (customer) => {
-  router.push(`/customer/${customer.id}`);
-  console.log(customer);
+const currentPage = ref(1);
+const isLoading = ref(false);
+const total = ref(2);
+
+const feedbackArray = ref([]);
+const fetchFeedbacks = async (params) => {
+  isLoading.value = true;
+  const data = await FeedbackService.fetchFeedbacks(params);
+  total.value = data.total;
+  feedbackArray.value = data.feedback;
+  isLoading.value = false;
+  console.log(data);
 };
 
-const handleViewOrderHistory = (customer) => {
-  console.log('order history clicked');
+const fetchMarketplaceFeedback = async (params) => {
+  isLoading.value = true;
+  const data = await FeedbackService.fetchMarketplaceFeedback(params);
+  total.value = data.total;
+  feedbackArray.value = data.feedback;
+  isLoading.value = false;
+  console.log(data);
 };
 
-const handleDeactivateAccount = (account) => {
-  console.log('deactivate account selected');
+const fetchPartnerFeedback = async (params) => {
+  isLoading.value = true;
+  const data = await FeedbackService.fetchPartnerFeedback(params);
+  total.value = data.total;
+  feedbackArray.value = data.feedback;
+  isLoading.value = false;
+  console.log(data);
 };
 
-const handleSendEmail = (account) => {
-  console.log('email sent');
+const fetchRecipeFeedback = async (params) => {
+  isLoading.value = true;
+  const data = await FeedbackService.fetchRecipeFeedback(params);
+  total.value = data.total;
+  feedbackArray.value = data.feedback;
+  isLoading.value = false;
+  console.log(data);
 };
+
+const fetchGeneralFeedback = async (params) => {
+  isLoading.value = true;
+  const data = await FeedbackService.fetchGeneralFeedback(params);
+  total.value = data.total;
+  feedbackArray.value = data.feedback;
+  isLoading.value = false;
+  console.log(data);
+};
+
+const selectedDetails = ref({});
+
+const viewDetails = (e) => {
+  showModal.value = true;
+  selectedDetails.value = e;
+  console.log(e);
+};
+
+const handlePageChange = (page) => {
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchFeedbacks({ page: page });
+      break;
+    case 1:
+      fetchMarketplaceFeedback({ page: currentPage.value });
+      break;
+    case 2: // Completed orders
+      fetchPartnerFeedback({ page: currentPage.value });
+
+      break;
+    case 3: // Canceled orders
+      fetchRecipeFeedback({ page: currentPage.value });
+      break;
+
+    case 4: // Canceled orders
+      fetchGeneralFeedback({ page: currentPage.value });
+      break;
+    default:
+      fetchFeedbacks({ page: currentPage.value });
+  }
+};
+
+// onMounted(async () => {
+//   await fetchFeedbacks({ page: currentPage.value });
+// });
+
+watch(activeTab, (newTab) => {
+  switch (newTab) {
+    case 0:
+      fetchFeedbacks({ page: currentPage.value });
+      break;
+    case 1:
+      fetchMarketplaceFeedback({ page: currentPage.value });
+      break;
+    // // Add cases for other tabs as needed
+    case 2:
+      fetchPartnerFeedback({ page: currentPage.value });
+      break;
+
+    case 3: // Canceled orders
+      fetchRecipeFeedback({ page: currentPage.value });
+      break;
+
+    case 4: // Canceled orders
+      fetchGeneralFeedback({ page: currentPage.value });
+      break;
+
+    //   break;
+    default:
+      fetchFeedbacks({ page: currentPage.value });
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>
