@@ -79,7 +79,7 @@
 
 <script>
 import { ref } from 'vue';
-import { formatAsMoney } from '@/utils/formatAsmoney.js';
+import { formatAsMoney } from '@/utils/formatAsMoney.js';
 
 export default {
   name: 'PaymentHistoryTable',
