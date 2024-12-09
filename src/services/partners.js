@@ -14,4 +14,34 @@ export default class PartnerService {
       toast.error(err.response.data.message);
     }
   }
+
+  static async fetchEntrepreneurs(params) {
+    try {
+      const { data } = await http.get(ENDPOINTS.GET_ENTREPRENEURS, { params });
+
+      return data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  }
+
+  static async fetchRestaurant(params) {
+    try {
+      const { data } = await http.get(ENDPOINTS.GET_RESTAURANTS, { params });
+
+      return data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  }
+
+  static async fetchVendors(params) {
+    try {
+      const { data } = await http.get(ENDPOINTS.GET_VENDORS, { params });
+
+      return data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  }
 }

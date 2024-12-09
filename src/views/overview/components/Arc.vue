@@ -2,13 +2,15 @@
   <div class="relative -mx-20 -mt-10">
     <canvas id="half-doughnut-chart"></canvas>
     <div class="absolute top-40 left-[50%] translate-x-[-50%]">
-      <p class="text-[23px] font-semibold">75.55%</p>
+      <p class="text-[23px] font-semibold">{{ chartData.revenue }}</p>
 
       <div
         class="py-0.5 px-1.5 flex justify-center gap-1 bg-primary-50 rounded-[100px]"
       >
         <img src="@/assets/svg/arrow-up-right.svg" alt="" />
-        <p class="text-primary-600 text-[10px]">10%</p>
+        <p class="text-primary-600 text-[10px]">
+          {{ chartData.percentageDifference }}
+        </p>
       </div>
     </div>
   </div>
@@ -27,6 +29,12 @@ import {
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 export default {
+  props: {
+    chartData: {
+      type: Object,
+      default: () => {},
+    },
+  },
   mounted() {
     const ctx = document.getElementById('half-doughnut-chart').getContext('2d');
 
@@ -35,7 +43,10 @@ export default {
       data: {
         datasets: [
           {
-            data: [75.55, 24.45], // 75.55% for filled part and 24.45% for empty part
+            data: [
+              this.chartData?.percentageDifference + 1,
+              100 - this.chartData?.percentageDifference - 1,
+            ], // 75.55% for filled part and 24.45% for empty part
             backgroundColor: ['#FFA500', '#E5E5E5'], // Orange for filled, grey for empty
             hoverBackgroundColor: ['#FFB347', '#E5E5E5'],
             borderWidth: 0, // Remove the border around segments

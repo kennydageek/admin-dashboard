@@ -3,27 +3,27 @@
     <table class="w-full">
       <thead>
         <tr class="rounded-[16px]">
-          <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th>
+          <!-- <th class="rounded-l-[16px] text-sm text-grey-500">#ID</th> -->
           <th class="text-sm text-grey-500">Business name</th>
           <th class="text-sm text-grey-500">Business address</th>
-          <th class="text-sm text-grey-500">Location</th>
-          <th class="text-sm text-grey-500">Partner type</th>
+          <!-- <th class="text-sm text-grey-500">Location</th> -->
+          <!-- <th class="text-sm text-grey-500">Partner type</th> -->
           <th class="text-sm text-grey-500">Product type</th>
           <th class="text-sm text-grey-500">Email</th>
           <th class="text-sm text-grey-500">Phone number</th>
           <th class="text-sm text-grey-500"></th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(item, index) in tableArray" :key="index">
-          <td>{{ item.id }}</td>
-          <td>Business name</td>
-          <td>Business address</td>
-          <td>Location</td>
-          <td>Partner type</td>
-          <td>Product type</td>
-          <td>Email</td>
-          <td>Phone number</td>
+      <tbody v-if="props.loading === false && props?.items?.length !== 0">
+        <tr v-for="(item, index) in props?.items" :key="index">
+          <td>{{ item.businessName }}</td>
+          <td>{{ item.businessAddress }}</td>
+          <!-- <td>Location</td>
+          <td>Partner type</td> -->
+          <td>{{ item.productType }}</td>
+          <td>{{ item.businessEmail }}</td>
+          <td>{{ item.phoneNumber }}</td>
+          <!-- <td><p class="text-sm text-primary-500">Active</p></td> -->
           <td>
             <div class="relative">
               <img
@@ -42,23 +42,30 @@
                 <!-- Content inside the modal -->
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectAction(item)"
+                  @click="handleSelectCustomerProfile(item)"
                 >
-                  <p class="text-[18px]">Confirm Partner</p>
+                  <p class="text-[18px]">View Customer Profile</p>
                 </div>
 
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectRejectAction(item)"
+                  @click="handleSelectOrderHistory(item)"
                 >
-                  <p class="text-[18px]">Reject Partner</p>
+                  <p class="text-[18px]">View Order History</p>
                 </div>
 
                 <div
                   class="p-4 cursor-pointer hover:bg-neutral-50"
-                  @click="handleSelectDownload(item)"
+                  @click="handleSelectDeactivateAccount(item)"
                 >
-                  <p class="text-[18px]">Download all document</p>
+                  <p class="text-[18px]">Deactivate Account</p>
+                </div>
+
+                <div
+                  class="p-4 cursor-pointer hover:bg-neutral-50"
+                  @click="handleSelectSendEmail(item)"
+                >
+                  <p class="text-[18px]">Send Email</p>
                 </div>
                 <!-- Example: Add more content here -->
               </div>
@@ -67,14 +74,31 @@
         </tr>
       </tbody>
     </table>
+    <div class="flex w-full justify-center mt-10" v-if="props.loading">
+      <ea-spinner small class="mx-auto block" />
+    </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
+import EaSpinner from '@/components/EaSpinner.vue';
 
 export default {
   name: 'PaymentHistoryTable',
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    EaSpinner,
+  },
   setup(props, { emit }) {
     const tableArray = ref([
       {
@@ -109,28 +133,31 @@ export default {
       item.showModal = false;
     };
 
-    const handleSelectAction = (item) => {
-      closeModal(item);
-      emit('selected-action', item);
+    const handleSelectCustomerProfile = (item) => {
+      emit('view-customer-profile', item);
     };
 
-    const handleSelectRejectAction = (item) => {
-      closeModal(item);
-      emit('selected-reject-action', item);
+    const handleSelectOrderHistory = (item) => {
+      emit('view-order-history', item);
     };
 
-    const handleSelectDownload = (item) => {
-      closeModal(item);
-      emit('selected-download-action', item);
+    const handleSelectDeactivateAccount = (item) => {
+      emit('deactivate-account', item);
+    };
+
+    const handleSelectSendEmail = (item) => {
+      emit('send-email', item);
     };
 
     return {
       tableArray,
       toggleModal,
       closeModal,
-      handleSelectAction,
-      handleSelectRejectAction,
-      handleSelectDownload,
+      handleSelectCustomerProfile,
+      handleSelectOrderHistory,
+      handleSelectDeactivateAccount,
+      handleSelectSendEmail,
+      props,
     };
   },
 };

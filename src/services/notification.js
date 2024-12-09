@@ -15,6 +15,16 @@ export default class NotificationService {
     }
   }
 
+  static async updateNotification(payload) {
+    try {
+      const { data } = await http.post(ENDPOINTS.UPDATE_NOTIFICATION, payload);
+
+      return data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  }
+
   static async pushNotification(payload) {
     try {
       const { data } = await http.post(ENDPOINTS.PUSH_NOTIFICATIONS, payload);

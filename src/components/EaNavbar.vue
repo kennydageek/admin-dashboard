@@ -16,7 +16,7 @@
       </div>
     </div>
     <div
-      class="absolute shadow-sm flex right-0 bg-white w-[180px] rounded-bl-lg rounded-r-lg flex-col items-center py-6 px-4"
+      class="absolute shadow-sm flex right-0 bg-white w-[180px] rounded-bl-lg rounded-r-lg flex-col items-center py-6 px-4 z-[1000000000000000]"
       v-if="showMod"
       v-click-away="onClickAway"
     >
@@ -25,17 +25,30 @@
       </div>
       <p class="mt-4 text-[18px] text-neutral-700">Admin EA</p>
 
-      <p class="mt-6 text-[18px] text-red-500">Sign out</p>
+      <p
+        class="mt-6 text-[18px] text-red-500 cursor-pointer"
+        @click="handleLogout"
+      >
+        Sign out
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 const showMod = ref(false);
 
 const onClickAway = (event) => {
   showMod.value = false;
+};
+
+const router = useRouter();
+
+const handleLogout = () => {
+  router.push('/');
+  localStorage.clear();
 };
 </script>
 

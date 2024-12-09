@@ -16,6 +16,9 @@ export const SEARCH_ALL_CUSTOMERS_ORDER = '/admin/searchCustomerOrders';
 
 // Partners
 export const GET_PARTNERS = '/admin/getAllPartners';
+export const GET_ENTREPRENEURS = '/admin/getAllEntrepreneurs';
+export const GET_RESTAURANTS = '/admin/getAllResturants';
+export const GET_VENDORS = '/admin/getAllVendors';
 
 // Orders
 export const GET_ORDERS = '/admin/getAllOrders';
@@ -36,6 +39,7 @@ export const DEACTIVATATE_STAFF = '/admin/deactivateStaff';
 export const GET_NOTIFICATIONS = '/admin/getUserNotificationSettings';
 export const PUSH_NOTIFICATIONS = '/admin/sendPushNotification';
 export const UPLOAD_MEDIA = '/admin/mediaUpload';
+export const UPDATE_NOTIFICATION = 'admin/updateNotification';
 
 // Eedbacks
 export const GET_FEEDBACKS = '/admin/getAllFeedback';
@@ -47,3 +51,8 @@ export const GET_GENERAL_FEEDBACK = '/admin/getGeneralFeedback';
 // Categories
 export const GET_CATEGORIES = '/category/findAll';
 export const CREATE_CATEGORY = '/admin/createCategory';
+
+// Overview
+export const GET_DASHBOARD_CARDS = '/admin/getDashboardCards';
+export const GET_DASHBOARD_CHART = '/admin/getDashboardChart';
+export const GET_SALES_PROGRESS = '/admin/getSalesProgress';

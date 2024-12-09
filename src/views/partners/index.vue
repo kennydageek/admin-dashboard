@@ -192,7 +192,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 // import StatCard from './components/StatCard.vue';
 // import Arc from './components/Arc.vue';
 // import LineChart from './components/LineChart.vue';
@@ -332,13 +332,100 @@ const tabs = [
 const partnerArray = ref([]);
 
 const handlePaginate = (e) => {
-  fetchPartners(e, perPage.value);
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchPartners(currentPage.value, perPage.value);
+      break;
+    case 1: // Processing orders
+      fetchEntrepreneurs(currentPage.value, perPage.value);
+      break;
+    case 2: // Completed orders
+      fetchRestaurant(currentPage.value, perPage.value);
+
+      break;
+    case 3: // Canceled orders
+      fetchVendors(currentPage.value, perPage.value);
+      break;
+    default:
+      console.error('Unknown tab selected');
+  }
 };
+
+watch(activeTab, (newTab) => {
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchPartners(currentPage.value, perPage.value);
+      break;
+    case 1: // Processing orders
+      fetchEntrepreneurs(currentPage.value, perPage.value);
+      break;
+    case 2: // Completed orders
+      fetchRestaurant(currentPage.value, perPage.value);
+
+      break;
+    case 3: // Canceled orders
+      fetchVendors(currentPage.value, perPage.value);
+      break;
+    default:
+      console.error('Unknown tab selected');
+  }
+});
 
 const fetchPartners = async (page, limit) => {
   try {
     loading.value = true;
     const data = await PartnerService.fetchPartners({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchEntrepreneurs = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchEntrepreneurs({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchVendors = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchVendors({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchRestaurant = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchRestaurant({
       page,
       limit,
     });

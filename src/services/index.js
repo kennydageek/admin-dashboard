@@ -6,6 +6,7 @@ import StaffService from './staff.js';
 import NotificationService from './notification.js';
 import FeedbackService from './feedback.js';
 import CategoryService from './category.js';
+import OverviewService from './overview.js';
 
 export {
   AuthService,
@@ -16,4 +17,5 @@ export {
   NotificationService,
   FeedbackService,
   CategoryService,
+  OverviewService,
 };

@@ -45,13 +45,16 @@
         <img src="@/assets/svg/dots-vertical.svg" class="self-start" alt="" />
       </div>
       <div class="">
-        <arc />
+        <arc :chartData="salesProgress" :key="keyIndex" />
 
         <div class="-mt-8 mb-4">
           <p class="text-neutral-700 text-sm text-center">
-            You succeed earn
-            <span class="text-neutral-800 font-semibold">$240</span> today, its
-            higher than yesterday
+            You've earned
+            <span class="text-neutral-800 font-semibold"
+              >£{{ salesProgress.today }}</span
+            >
+            today
+            <!-- today, its higher than yesterday -->
           </p>
         </div>
 
@@ -59,14 +62,18 @@
           <div class="">
             <p class="mb-1">Revenue</p>
             <div class="text-[23px] font-semibold flex gap-1">
-              <p class="font-fontHead">$16k</p>
+              <p class="font-fontHead">
+                {{ formatAsMoney(salesProgress.revenue) }}
+              </p>
               <img src="@/assets/svg/arrow-up.svg" alt="" />
             </div>
           </div>
           <div class="">
             <p class="mb-1">Today</p>
             <div class="text-[23px] font-semibold flex gap-1">
-              <p class="font-fontHead">$1.5k</p>
+              <p class="font-fontHead">
+                {{ formatAsMoney(salesProgress.today) }}
+              </p>
               <img src="@/assets/svg/arrow-up.svg" alt="" />
             </div>
           </div>
@@ -81,7 +88,7 @@
           <img src="@/assets/svg/caret-down.svg" alt="" />
         </button>
       </div>
-      <line-chart />
+      <line-chart :chartData="chartData" />
     </div>
   </div>
 
@@ -155,48 +162,112 @@
       </div>
 
       <EaTabs :tabs="tabs" v-model:activeTab="activeTab" class="mt-4">
-        <template v-slot:accepted>
-          <accepted-partners-table
-            @selected-action="handleShowConfirmPartnerModal"
-            @selected-reject-action="handleShowRejectModal"
-            @selected-download-action="handleShowDownloadModal"
+        <template v-slot:all>
+          <div
+            class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
+          >
+            <input
+              type="text"
+              placeholder="Search products by name, price, date"
+              class="w-[70%] outline-none py-2 rounded"
+            />
+            <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
+          </div>
+          <customers-table
+            @view-customer-profile="handleSelectCustomerProfile"
+            @view-order-history="handleViewOrderHistory"
+            @deactivate-account="handleDeactivateAccount"
+            @send-email="handleSendEmail"
+            :items="partnerArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
+            :key="keyIndex"
           />
         </template>
 
-        <template v-slot:pending>
-          <accepted-partners-table
+        <template v-slot:entrepreneur>
+          <div
+            class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
+          >
+            <input
+              type="text"
+              placeholder="Search products by name, price, date"
+              class="w-[70%] outline-none py-2 rounded"
+            />
+            <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
+          </div>
+          <customers-table
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="partnerArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
+            :key="keyIndex"
           />
         </template>
 
-        <template v-slot:rejected>
-          <accepted-partners-table
+        <template v-slot:restaurant>
+          <div
+            class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
+          >
+            <input
+              type="text"
+              placeholder="Search products by name, price, date"
+              class="w-[70%] outline-none py-2 rounded"
+            />
+            <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
+          </div>
+          <customers-table
             @selected-action="handleShowConfirmPartnerModal"
             @selected-reject-action="handleShowRejectModal"
             @selected-download-action="handleShowDownloadModal"
+            :items="partnerArray"
+            :loading="loading"
           />
           <pagination
-            class=""
             :current-page="1"
-            :total-records="80"
-            :per-page="5"
-            @onchange="console.log('kenny')"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
+            :key="keyIndex"
+          />
+        </template>
+
+        <template v-slot:vendors>
+          <div
+            class="my-4 input-container w-[70%] bg-white border border-neutral-400 rounded flex px-3 justify-between"
+          >
+            <input
+              type="text"
+              placeholder="Search products by name, price, date"
+              class="w-[70%] outline-none py-2 rounded"
+            />
+            <img src="@/assets/svg/search.svg" class="cursor-pointer" alt="" />
+          </div>
+          <customers-table
+            @selected-action="handleShowConfirmPartnerModal"
+            @selected-reject-action="handleShowRejectModal"
+            @selected-download-action="handleShowDownloadModal"
+            :items="partnerArray"
+            :loading="loading"
+          />
+          <pagination
+            :current-page="1"
+            :total-records="total"
+            :per-page="limit"
+            @onchange="handlePaginate"
+            :key="keyIndex"
           />
         </template>
       </EaTabs>
@@ -423,13 +494,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, onMounted, ref, watch } from 'vue';
 import StatCard from './components/StatCard.vue';
 import Arc from './components/Arc.vue';
 import LineChart from './components/LineChart.vue';
 import EaTabs from '@/components/EaTabs.vue';
-import AcceptedPartnersTable from './components/AcceptedPartnersTable.vue';
+import CustomersTable from './components/AcceptedPartnersTable.vue';
 import Pagination from '@/components/pagination.vue';
+import { OverviewService, PartnerService } from '@/services';
+import { formatAsMoney } from '@/utils/formatAsMoney';
+
+const keyIndex = ref(0);
+const loading = ref(false);
+const total = ref(20);
+const limit = ref(5);
+const perPage = ref(5);
+const currentPage = ref(1);
 
 const showDateModal = ref(false);
 const showDateModal2 = ref(false);
@@ -440,6 +520,8 @@ const showDownloadModal = ref(false);
 
 const confirmStep = ref(1);
 const rejectStep = ref(1);
+const chartData = ref([]);
+const salesProgress = ref({});
 
 const dateArray = ref([
   { text: 'Today - 7/26/2024', value: '7/26/2024' },
@@ -480,75 +562,27 @@ const handleSelectDateFilter = (date) => {
   // onClickAway();
 };
 
-const statCardArray = ref([
-  {
-    title: 'Income',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-
-  {
-    title: 'Gross revenue',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-
-  {
-    title: 'Total sales',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-  {
-    title: 'Total payment',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-  {
-    title: 'Buyers',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-  {
-    title: 'Partners',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-
-  {
-    title: 'App download',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-
-  {
-    title: 'All users',
-    amount: '209,811',
-    percIncrease: '13%',
-    numIncrease: '18k',
-  },
-]);
+const statCardArray = ref([]);
 
 const activeTab = ref(0);
 const tabs = [
   {
-    title: 'Accepted partners(5)',
-    name: 'accepted',
+    title: 'All partners (5)',
+    name: 'all',
   },
   {
-    title: 'Pending partners(5)',
-    name: 'pending',
+    title: 'Entrepreneur (5)',
+    name: 'entrepreneur',
   },
 
   {
-    title: 'Rejected partners(5)',
-    name: 'rejected',
+    title: 'Restaurant (5)',
+    name: 'restaurant',
+  },
+
+  {
+    title: 'Vendors (5)',
+    name: 'vendors',
   },
 ];
 
@@ -592,6 +626,143 @@ const rejectionArray = ref([
     selected: false,
   },
 ]);
+
+const fetchOverview = async () => {
+  const data = await OverviewService.fetchDashboardCards();
+  statCardArray.value = data;
+};
+
+const fetchDashboardChart = async () => {
+  const data = await OverviewService.fetchDashboardChart({ filter: 'monthly' });
+  chartData.value = data.data;
+};
+
+const fetchSalesProgress = async () => {
+  const data = await OverviewService.fetchSalesProgress();
+  salesProgress.value = data;
+  keyIndex.value += 1;
+  console.log(data);
+};
+
+onMounted(async () => {
+  fetchOverview();
+  fetchDashboardChart();
+});
+
+const partnerArray = ref([]);
+
+const fetchPartners = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchPartners({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = 5;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchEntrepreneurs = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchEntrepreneurs({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = 5;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchVendors = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchVendors({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = 5;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchRestaurant = async (page, limit) => {
+  try {
+    loading.value = true;
+    const data = await PartnerService.fetchRestaurant({
+      page,
+      limit,
+    });
+    partnerArray.value = data.partners;
+    total.value = data?.total;
+    perPage.value = 5;
+    currentPage.value = data.page;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handlePaginate = (e) => {
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchPartners(currentPage.value, perPage.value);
+      break;
+    case 1: // Processing orders
+      fetchEntrepreneurs(currentPage.value, perPage.value);
+      break;
+    case 2: // Completed orders
+      fetchRestaurant(currentPage.value, perPage.value);
+
+      break;
+    case 3: // Canceled orders
+      fetchVendors(currentPage.value, perPage.value);
+      break;
+    default:
+      console.error('Unknown tab selected');
+  }
+};
+
+watch(activeTab, (newTab) => {
+  switch (activeTab.value) {
+    case 0: // All orders
+      fetchPartners(currentPage.value, perPage.value);
+      break;
+    case 1: // Processing orders
+      fetchEntrepreneurs(currentPage.value, perPage.value);
+      break;
+    case 2: // Completed orders
+      fetchRestaurant(currentPage.value, perPage.value);
+
+      break;
+    case 3: // Canceled orders
+      fetchVendors(currentPage.value, perPage.value);
+      break;
+    default:
+      console.error('Unknown tab selected');
+  }
+});
+
+onBeforeMount(async () => {
+  await fetchSalesProgress();
+  await fetchPartners();
+});
 </script>
 
 <style lang="scss" scoped></style>
