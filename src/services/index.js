@@ -7,6 +7,7 @@ import NotificationService from './notification.js';
 import FeedbackService from './feedback.js';
 import CategoryService from './category.js';
 import OverviewService from './overview.js';
+import BlogService from './blog.js';
 
 export {
   AuthService,
@@ -18,4 +19,5 @@ export {
   FeedbackService,
   CategoryService,
   OverviewService,
+  BlogService,
 };

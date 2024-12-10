@@ -64,6 +64,11 @@ const generalLinks = [
   },
 
   {
+    name: 'Blogs',
+    to: 'blogs',
+  },
+
+  {
     name: 'Staff',
     to: 'staff',
   },

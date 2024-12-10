@@ -42,7 +42,7 @@
             <img src="@/assets/svg/caret-left-black.svg" alt="" />
           </div>
         </a>
-        <div>
+        <div :key="keyIndex">
           <span v-for="(n, i) in pages?.items" :key="i">
             <a
               href="#"
@@ -94,6 +94,7 @@ export default {
       current: this.currentPage,
       maxPages: Math.ceil(this.totalRecords / this.perPage),
       pages: {},
+      keyIndex: 1,
     };
   },
   watch: {

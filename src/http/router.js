@@ -13,6 +13,9 @@ import Feedback from '@/views/feedback/index.vue';
 import Staff from '@/views/staff/index.vue';
 import AddStaff from '@/views/staff/AddStaff.vue';
 import EditStaff from '@/views/staff/EditStaff.vue';
+import Blog from '@/views/blog/index.vue';
+import CreateBlog from '@/views/blog/create.vue';
+import BlogDetails from '@/views/blog/details.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -158,6 +161,36 @@ const router = createRouter({
       component: Feedback,
       meta: {
         title: 'Feedback',
+        layout: 'private',
+      },
+    },
+
+    {
+      path: '/blogs',
+      name: 'blogs',
+      component: Blog,
+      meta: {
+        title: 'Blog',
+        layout: 'private',
+      },
+    },
+
+    {
+      path: '/blogs/create',
+      name: 'create-blog',
+      component: CreateBlog,
+      meta: {
+        title: 'Create Blog',
+        layout: 'private',
+      },
+    },
+
+    {
+      path: '/blogs/:id/details',
+      name: 'blog-details',
+      component: BlogDetails,
+      meta: {
+        title: 'Create Blog',
         layout: 'private',
       },
     },

@@ -651,7 +651,7 @@ onMounted(async () => {
 
 const partnerArray = ref([]);
 
-const fetchPartners = async (page, limit = 5) => {
+const fetchPartners = async (page, limit) => {
   try {
     loading.value = true;
     const data = await PartnerService.fetchPartners({
@@ -761,7 +761,7 @@ watch(activeTab, (newTab) => {
 
 onBeforeMount(async () => {
   await fetchSalesProgress();
-  await fetchPartners(currentPage.value, perPage.value);
+  await fetchPartners();
 });
 </script>
 

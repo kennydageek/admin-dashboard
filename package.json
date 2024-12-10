@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@tanstack/vue-query": "^5.61.5",
     "axios": "^1.7.8",
     "chart.js": "^4.4.6",

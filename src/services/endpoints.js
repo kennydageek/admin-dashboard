@@ -56,3 +56,12 @@ export const CREATE_CATEGORY = '/admin/createCategory';
 export const GET_DASHBOARD_CARDS = '/admin/getDashboardCards';
 export const GET_DASHBOARD_CHART = '/admin/getDashboardChart';
 export const GET_SALES_PROGRESS = '/admin/getSalesProgress';
+
+// Blogs
+export const GET_ALL_BLOGPOSTS = '/blog/getAll';
+export const GET_BLOG_CATEGORIES = '/blog/getCategories';
+export const CREATE_POST = '/blog/createPost';
+export const CREATE_BLOG_CATEGORY = '/blog/createBlogCategory';
+export const GET_A_BLOGPOSTS = '/blog/getPost';
+export const UPDATE_POST = '/blog/updatePost';
+export const DELETE_POST = '/blog/deletePost';
