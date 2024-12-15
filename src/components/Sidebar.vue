@@ -64,8 +64,18 @@ const generalLinks = [
   },
 
   {
+    name: 'Products',
+    to: 'products',
+  },
+
+  {
     name: 'Blogs',
     to: 'blogs',
+  },
+
+  {
+    name: 'Recipes',
+    to: 'recipes',
   },
 
   {

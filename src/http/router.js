@@ -17,6 +17,9 @@ import Blog from '@/views/blog/index.vue';
 import CreateBlog from '@/views/blog/create.vue';
 import BlogDetails from '@/views/blog/details.vue';
 
+import Products from '@/views/products/index.vue';
+import Recipes from '@/views/recipes/index.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -194,6 +197,42 @@ const router = createRouter({
         layout: 'private',
       },
     },
+
+    {
+      path: '/products',
+      name: 'products',
+      component: Products,
+
+      meta: {
+        title: 'Products',
+        layout: 'private',
+      },
+    },
+
+    {
+      path: '/recipes',
+      name: 'recipes',
+      component: Recipes,
+
+      meta: {
+        title: 'Recipes',
+        layout: 'private',
+      },
+    },
+    // {
+    //   path: "/products/add",
+    //   name: "add-product",
+    //   component: PrivateLayout,
+    //   props: { pageComponent: AddProducts },
+    //   meta: { requiresAuth: true },
+    // },
+    // {
+    //   path: "/products/:id",
+    //   name: "product-details",
+    //   component: PrivateLayout,
+    //   props: { pageComponent: ProductDetails },
+    //   meta: { requiresAuth: true },
+    // },
   ],
 });
 

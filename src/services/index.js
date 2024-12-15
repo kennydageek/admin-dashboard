@@ -8,6 +8,8 @@ import FeedbackService from './feedback.js';
 import CategoryService from './category.js';
 import OverviewService from './overview.js';
 import BlogService from './blog.js';
+import ProductService from './products.js';
+import RecipeService from './recipes.js';
 
 export {
   AuthService,
@@ -20,4 +22,6 @@ export {
   CategoryService,
   OverviewService,
   BlogService,
+  ProductService,
+  RecipeService,
 };

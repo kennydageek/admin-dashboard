@@ -65,3 +65,15 @@ export const CREATE_BLOG_CATEGORY = '/blog/createBlogCategory';
 export const GET_A_BLOGPOSTS = '/blog/getPost';
 export const UPDATE_POST = '/blog/updatePost';
 export const DELETE_POST = '/blog/deletePost';
+
+// Products
+export const GET_ALL_PRODUCTS = '/admin/viewAllProducts';
+export const ADD_TO_FEATURED_PRODUCTS = '/admin/addFeaturedProduct';
+export const GET_FEATURED_PRODUCTS = '/admin/viewAllFeaturedProducts';
+export const REMOVE_FEATURED_PRODUCTS = '/admin/featuredProduct';
+
+// Recipes
+export const GET_ALL_RECIPES = '/admin/viewAllRecipes';
+export const ADD_FEATURED_RECIPES = '/admin/addFeaturedRecipe';
+export const GET_FEATURED_RECIPES = '/admin/viewAllFeaturedRecipes';
+export const REMOVE_FEATURED_RECIPES = '/admin/featuredRecipe';
