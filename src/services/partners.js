@@ -44,4 +44,14 @@ export default class PartnerService {
       toast.error(err.response.data.message);
     }
   }
+
+  static async searchPartners(params) {
+    try {
+      const { data } = await http.get(ENDPOINTS.SEARCH_PARTNERS, { params });
+      console.log(data);
+      return data;
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
+    }
+  }
 }

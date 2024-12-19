@@ -13,12 +13,14 @@ export const GET_ALL_CUSTOMERS_CANCELLED_ORDER =
   '/admin/getAllCustomerCancelledOrders';
 
 export const SEARCH_ALL_CUSTOMERS_ORDER = '/admin/searchCustomerOrders';
+export const SEARCH_CUSTOMERS = '/admin/searchCustomers';
 
 // Partners
 export const GET_PARTNERS = '/admin/getAllPartners';
 export const GET_ENTREPRENEURS = '/admin/getAllEntrepreneurs';
 export const GET_RESTAURANTS = '/admin/getAllResturants';
 export const GET_VENDORS = '/admin/getAllVendors';
+export const SEARCH_PARTNERS = '/admin/searchPartners';
 
 // Orders
 export const GET_ORDERS = '/admin/getAllOrders';

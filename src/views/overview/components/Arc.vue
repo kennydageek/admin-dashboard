@@ -2,7 +2,9 @@
   <div class="relative -mx-20 -mt-10">
     <canvas id="half-doughnut-chart"></canvas>
     <div class="absolute top-40 left-[50%] translate-x-[-50%]">
-      <p class="text-[23px] font-semibold">{{ chartData.revenue }}</p>
+      <p class="text-[23px] font-semibold">
+        {{ formatAsMoney(chartData.revenue) }}
+      </p>
 
       <div
         class="py-0.5 px-1.5 flex justify-center gap-1 bg-primary-50 rounded-[100px]"
@@ -17,6 +19,7 @@
 </template>
 
 <script>
+import { formatAsMoney } from '@/utils/formatAsMoney.js';
 import {
   Chart,
   DoughnutController,
@@ -34,6 +37,9 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+  methods: {
+    formatAsMoney,
   },
   mounted() {
     const ctx = document.getElementById('half-doughnut-chart').getContext('2d');

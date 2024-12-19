@@ -2,7 +2,6 @@
   "name": "ea-admin",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,6 +10,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@tanstack/vue-query": "^5.61.5",
+    "@vuepic/vue-datepicker": "^10.0.0",
     "axios": "^1.7.8",
     "chart.js": "^4.4.6",
     "pinia": "^2.2.6",

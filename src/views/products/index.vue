@@ -247,7 +247,7 @@
         Cancel
       </button>
       <button
-        class="py-4 w-full px-6 rounded bg-primary-500 text-white"
+        class="py-4 w-full px-6 rounded bg-red-500 text-white"
         @click="handleRemoveFromFeaturedProducts"
       >
         <ea-spinner v-if="isDeleting" small />
@@ -304,7 +304,7 @@ const postId = ref({});
 
 const handleAddToFeaturedProducts = async () => {
   const payload = {
-    productId: postId.value.id,
+    productId: postId.value._id,
     type: postId.value.type,
   };
 
@@ -324,7 +324,7 @@ const handleAddToFeaturedProducts = async () => {
 
 const handleRemoveFromFeaturedProducts = async () => {
   const payload = {
-    productId: postId.value.id,
+    productId: postId.value._id,
     type: postId.value.type,
   };
 
@@ -335,10 +335,11 @@ const handleRemoveFromFeaturedProducts = async () => {
     console.log(data);
     toast.success(data.responseMessage);
     isDeleting.value = false;
-    showFeaturedModal.value = false;
-    setTimeout(() => {
-      fetchProducts({ page: 1 });
-    }, 2000);
+    // showFeaturedModal.value = false;
+    showRemoveFeaturedModal.value = false;
+    // setTimeout(() => {
+    fetchFeaturedProducts({ page: 1 });
+    // }, 2000);
   } catch (error) {
     isDeleting.value = false;
   }

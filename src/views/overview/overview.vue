@@ -2,13 +2,13 @@
   <ea-navbar />
 
   <div class="my-[42px] relative">
-    <button
+    <!-- <button
       class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
       @click="showDateModal = true"
     >
       <p>{{ dateFilterValue || 'Filter By Date' }}</p>
       <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
-    </button>
+    </button> -->
 
     <div
       class="absolute shadow-sm flex top-0 left-[210px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
@@ -50,9 +50,9 @@
         <div class="-mt-8 mb-4">
           <p class="text-neutral-700 text-sm text-center">
             You've earned
-            <span class="text-neutral-800 font-semibold"
-              >£{{ salesProgress.today }}</span
-            >
+            <span class="text-neutral-800 font-semibold">{{
+              formatAsMoney(salesProgress.today)
+            }}</span>
             today
             <!-- today, its higher than yesterday -->
           </p>

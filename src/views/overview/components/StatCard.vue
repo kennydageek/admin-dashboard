@@ -2,7 +2,7 @@
   <div class="p-4 bg-white rounded-lg">
     <p class="text-neutral-700 mb-6">{{ item.title }}</p>
     <p class="font-fontHead font-semibold text-[23px] mb-4">
-      {{ item.amount }}
+      {{ formatAsMoney(item.amount) }}
     </p>
 
     <div class="flex gap-10">
@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+import { formatAsMoney } from '@/utils/formatAsMoney.js';
 const props = defineProps({
   item: Object,
   default: () => {},

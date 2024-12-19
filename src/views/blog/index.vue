@@ -256,7 +256,6 @@ const blogArray = ref([]);
 const handleShowDetails = (e) => {
   router.push(`/blogs/${e._id}/details`);
   console.log(e);
-  // router.push('/')
 };
 
 const postId = ref('');

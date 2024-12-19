@@ -3,21 +3,43 @@
 
   <div class="my-[42px] bg-white p-6">
     <div class="relative flex justify-between">
-      <button
+      <div class="w-[300px] self-stretch">
+        <VueDatePicker
+          class="w-[300px] h-full border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500"
+          placeholder="Filter by date"
+          range
+          :month-change-on-scroll="false"
+          :clearable="false"
+          v-model="modelValue"
+          @range-start="handleUpdateRangeStart"
+          @range-end="handleUpdateRangeEnd"
+          @blur="handleFilterByDate"
+        ></VueDatePicker>
+      </div>
+      <!-- <button
         class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
         @click="showDateModal2 = true"
       >
         <p class="text-sm">{{ dateFilterValue || 'Filter By Date' }}</p>
         <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
-      </button>
+      </button> -->
 
-      <button
-        class="py-4 px-6 gap-2 rounded border border-[#edefef] bg-neutral-50 inline-flex"
-        @click="showLocationModal = true"
+      <div
+        class="w-[400px] bg-white border border-neutral-400 rounded flex px-3 justify-between"
       >
-        <p class="text-sm">{{ LocationFilterValue || 'All location' }}</p>
-        <img src="@/assets/svg/caret-down.svg" alt="" class="self-center" />
-      </button>
+        <input
+          type="text"
+          placeholder="Enter location"
+          class="w-full outline-none py-2 rounded"
+          v-model="location"
+        />
+        <img
+          src="@/assets/svg/search.svg"
+          class="cursor-pointer"
+          @click="handleSearchByLocation"
+          alt=""
+        />
+      </div>
 
       <div
         class="absolute shadow-sm flex top-0 left-[170px] bg-white w-[284px] rounded-bl-lg rounded-r-lg flex-col py-6 px-4"
@@ -148,6 +170,7 @@ import Pagination from '@/components/pagination.vue';
 import CustomersTable from './components/CustomersTable.vue';
 import { useRouter } from 'vue-router';
 import { CustomerService } from '@/services';
+import { formatAsMoney } from '@/utils/formatAsMoney';
 
 // const showDateModal = ref(true);
 const showDateModal2 = ref(false);
@@ -318,6 +341,61 @@ const fetchCustomers = async (page, limit) => {
   }
 };
 
+const modelValue = ref('');
+const start = ref('');
+const end = ref('');
+const location = ref('');
+const handleUpdateRangeStart = (e) => {
+  const formattedStart = new Date(e).toISOString().split('T')[0];
+  start.value = formattedStart;
+  console.log(formattedStart);
+  console.log(e);
+};
+
+const handleUpdateRangeEnd = async (e) => {
+  const formattedEnd = new Date(e).toISOString().split('T')[0];
+  end.value = formattedEnd;
+
+  if (end.value === '') {
+    toast.error('Select a complete date range');
+    return;
+  }
+};
+
+const handleFilterByDate = async () => {
+  try {
+    loading.value = true;
+    const data = await CustomerService.searchCustomers({
+      start: start.value,
+      end: end.value,
+    });
+    tableArray.value = data?.users;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data?.page;
+    loading.value = false;
+  } catch (error) {
+    console.error(error);
+    loading.value = false;
+  }
+};
+
+const handleSearchByLocation = async () => {
+  try {
+    loading.value = true;
+    const data = await CustomerService.searchCustomers({
+      address: location.value,
+    });
+    tableArray.value = data?.users;
+    total.value = data?.total;
+    perPage.value = data?.limit;
+    currentPage.value = data?.page;
+    loading.value = false;
+  } catch (error) {
+    console.error(error);
+    loading.value = false;
+  }
+};
 onMounted(() => {
   fetchCustomers();
 });

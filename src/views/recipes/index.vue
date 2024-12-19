@@ -200,13 +200,13 @@
     @close-modal="showFeaturedModal = false"
     :setup="{
       modalActive: showFeaturedModal,
-      modalTitle: 'Add to Featured Products',
+      modalTitle: 'Add to Featured Recipes',
       isVerification: false,
     }"
     class="overflow-scroll"
   >
     <p class="text-neutral-700 mb-6">
-      Are you sure you want to add this product to Featured Products?
+      Are you sure you want to add this product to Featured Recipes?
     </p>
 
     <div class="flex justify-between gap-[112px] mt-6">
@@ -217,7 +217,7 @@
         Cancel
       </button>
       <button
-        class="py-4 w-full px-6 rounded bg-red-500 text-white"
+        class="py-4 w-full px-6 rounded bg-primary-500 text-white"
         @click="handleAddToFeaturedProducts"
       >
         <ea-spinner v-if="isDeleting" small />
@@ -247,7 +247,7 @@
         Cancel
       </button>
       <button
-        class="py-4 w-full px-6 rounded bg-primary-500 text-white"
+        class="py-4 w-full px-6 rounded bg-red-500 text-white"
         @click="handleRemoveFromFeaturedProducts"
       >
         <ea-spinner v-if="isDeleting" small />
@@ -377,10 +377,10 @@ const handleRemoveFromFeaturedProducts = async () => {
     console.log(data);
     toast.success(data.responseMessage);
     isDeleting.value = false;
-    showFeaturedModal.value = false;
-    setTimeout(() => {
-      fetchProducts({ page: 1 });
-    }, 2000);
+    showRemoveFeaturedModal.value = false;
+    // setTimeout(() => {
+    fetchFeaturedProducts({ page: 1 });
+    // }, 2000);
   } catch (error) {
     isDeleting.value = false;
   }

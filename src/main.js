@@ -14,16 +14,20 @@ import EaModal from '@/components/EaModal.vue';
 // import EaSelect from '@/components/global/EaSelect.vue';
 import EaSpinner from '@/components/EaSpinner.vue';
 import EaNavbar from '@/components/EaNavbar.vue';
-import { VueQueryPlugin } from "@tanstack/vue-query";
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+
 const app = createApp(App);
 
 app.component('EaButton', EaButton);
 app.component('EaModal', EaModal);
+app.component('VueDatePicker', VueDatePicker);
 // app.component('EaInput', EaInput);
 // app.component('EaSelect', EaSelect);
 app.component('EaSpinner', EaSpinner);

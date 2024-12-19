@@ -72,8 +72,8 @@ const isLoading = ref(false);
 const toast = useToast();
 
 const form = ref({
-  email: 'admin@email.com',
-  password: 'Password@1234',
+  email: '',
+  password: '',
 });
 
 const cityArray = ref([

@@ -93,4 +93,14 @@ export default class CustomerService {
       toast.error(err.response.data.message);
     }
   }
+
+  static async searchCustomers(params) {
+    try {
+      const { data } = await http.get(ENDPOINTS.SEARCH_CUSTOMERS, { params });
+      console.log(data);
+      return data;
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
+    }
+  }
 }
